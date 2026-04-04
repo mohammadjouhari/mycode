@@ -1,0 +1,9 @@
+Are you looking for a developer who understands both the code and the business goals?
+I am a Full-Stack Web Developer specializing in building high-performance, secure, and modern web applications. Whether you need a custom management system, a specialized API, or a polished frontend, I deliver clean code that scales.
+My Core Tech Stack:
+Backend: .NET Core / Entity Framework (Expert in ABP Framework)
+Frontend: Angular / TypeScript / Responsive UI
+Database: SQL Server / PostgreSQL / SQLite
+Security: JWT Authentication & Secure API Design
+Why choose me? ✅ High-quality, maintainable code. ✅ Clear and consistent communication. ✅ Focus on performance and security.
+Let’s discuss your next project! 📞 Call or WhatsApp: +962 79 047 5885

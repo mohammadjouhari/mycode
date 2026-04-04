@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <div class="tag-input-container form-control d-flex flex-wrap align-items-center" id="tagInputWrapper">
+    <input type="text" class="border-0 flex-grow-1" id="tagInput" placeholder="Press Enter to add tags..." style="outline: none;">
+</div>
+<input type="hidden" name="Tags" id="hiddenTags">
+
+<button type="button" id="btnSubmit" class="btn btn-primary">Primary</button>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+
+
+body{
+   padding: 25px;
+}
+
+h1 {
+ padding-bottom: 15px;
+}
+
+.alert {
+ margin-top: 25px;
+}
+.tag-input-container {
+    min-height: 45px;
+    cursor: text;
+}
+.tag-badge {
+    margin: 2px;
+    display: flex;
+    align-items: center;
+}
+.tag-badge .btn-close {
+    font-size: 0.5rem;
+    margin-left: 5px;
+}
+
+
+$( document ).ready(function() {
+ $( "#hi" ).click(function() {
+    $("#alert-div").toggle();
+ });
+});
+const tagInput = document.getElementById('tagInput');
+const wrapper = document.getElementById('tagInputWrapper');
+const hiddenInput = document.getElementById('hiddenTags');
+let tags = [];
+
+tagInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault(); // Prevent form submission
+        const value = tagInput.value.trim();
+        
+        if (value && !tags.includes(value)) {
+            tags.push(value);
+            addTagToUI(value);
+            tagInput.value = '';
+            updateHiddenInput();
+        }
+    }
+});
+
+function addTagToUI(text) {
+    const span = document.createElement('span');
+    span.className = 'badge bg-primary tag-badge p-2 rounded-pill';
+    span.innerHTML = `${text} <button type="button" class="btn-close btn-close-white" aria-label="Remove"></button>`;
+    
+    // Remove tag on click
+    span.querySelector('.btn-close').addEventListener('click', () => {
+        tags = tags.filter(t => t !== text);
+        span.remove();
+        updateHiddenInput();
+    });
+
+    wrapper.insertBefore(span, tagInput);
+}
+
+function updateHiddenInput() {
+    hiddenInput.value = tags.join(','); // Sends "Tag1,Tag2,Tag3" to .NET
+}
+
+const myButton = document.getElementById('btnSubmit');
+
+myButton.addEventListener('click', function(e) {
+    alert(tags);
+});
+
+

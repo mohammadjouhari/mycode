@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <title>Hello, world!</title>
+  </head>
+  <body>
+   <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+  <div class="container">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav w-100 justify-content-between">
+        <li class="nav-item dropdown has-mega-menu">
+          <a class="nav-link dropdown-toggle text-uppercase fw-bold" href="#" data-bs-toggle="dropdown">
+            Skin Care
+          </a>
+          <div class="dropdown-menu mega-menu p-4">
+            <div class="row">
+              <div class="col-md-3">
+                <h6 class="text-uppercase fw-bold border-bottom pb-2">Face Care</h6>
+                <ul class="list-unstyled">
+                  <li><a class="dropdown-item ps-0" href="#">Face Moisturizers</a></li>
+                  <li><a class="dropdown-item ps-0" href="#">Serums</a></li>
+                  <li><a class="dropdown-item ps-0" href="#">Whitening</a></li>
+                  <li><a class="dropdown-item ps-0" href="#">Face Cleanser</a></li>
+                </ul>
+              </div>
+              <div class="col-md-3">
+                <h6 class="text-uppercase fw-bold border-bottom pb-2">Body Care</h6>
+                <ul class="list-unstyled">
+                  <li><a class="dropdown-item ps-0" href="#">Body Lotions</a></li>
+                  <li><a class="dropdown-item ps-0" href="#">Deodorant</a></li>
+                  <li><a class="dropdown-item ps-0" href="#">Body Oils</a></li>
+                </ul>
+              </div>
+              <div class="col-md-3">
+                <h6 class="text-uppercase fw-bold border-bottom pb-2">Sun Protection</h6>
+                <ul class="list-unstyled">
+                  <li><a class="dropdown-item ps-0" href="#">Sunscreen</a></li>
+                  <li><a class="dropdown-item ps-0" href="#">Tanning Creams</a></li>
+                </ul>
+              </div>
+              <div class="col-md-3 bg-light p-3">
+                <h6 class="text-uppercase fw-bold">Top Brands</h6>
+                <p class="small text-muted">Shop your favorite luxury brands in one place.</p>
+                <a href="#" class="btn btn-dark btn-sm">View All</a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item"><a class="nav-link text-uppercase fw-bold" href="#">Makeup</a></li>
+        <li class="nav-item"><a class="nav-link text-uppercase fw-bold text-danger" href="#">Sale</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+.has-mega-menu {
+  position: static !important;
+}
+
+.mega-menu {
+  width: 100%;
+  left: 0;
+  right: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+  margin-top: 0;
+}
+
+/* Hover effects (optional, if you want it to open on hover like the site) */
+@media (min-width: 992px) {
+  .nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+  }
+}
+
+/* Styling links to match the site's clean aesthetic */
+.dropdown-item {
+  font-size: 0.9rem;
+  padding: 5px 0;
+  color: #555;
+  transition: color 0.2s;
+}
+
+.dropdown-item:hover {
+  background: transparent;
+  color: #000;
+  text-decoration: underline;
+}
+
+.mega-menu h6 {
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+}

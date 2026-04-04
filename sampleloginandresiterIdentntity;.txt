@@ -1,0 +1,155 @@
+using AppEntities.Models;
+using E_Commerce_App.ViewModels.Auth;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+
+namespace E_Commerce_App.Controllers
+{
+    public class AccountController : Controller
+    {
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
+
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+        }
+
+        // GET: /Account/Register
+        [HttpGet]
+        public IActionResult Register()
+        {
+            if (User.Identity!.IsAuthenticated) return RedirectToAction("Index", "Home");
+            return View();
+        }
+
+        // POST: /Account/Register
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterVM vm)
+        {
+            if (!ModelState.IsValid) return View(vm);
+            var user = new AppUser
+            {
+                UserName = vm.Email,
+                Email = vm.Email,
+                FullName = vm.FullName,
+                EmailConfirmed = true
+            };
+            var result = await _userManager.CreateAsync(user, vm.Password);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, "Customer");
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToAction("Index", "Home");
+            }
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+            return View(vm);
+        }
+
+        // GET: /Account/Login
+        [HttpGet]
+        public IActionResult Login(string? returnUrl = null)
+        {
+            if (User.Identity!.IsAuthenticated) return RedirectToAction("Index", "Home");
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
+
+        // POST: /Account/Login
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginVM vm, string? returnUrl = null)
+        {
+            if (!ModelState.IsValid) return View(vm);
+
+            var result = await _signInManager.PasswordSignInAsync(vm.Email, vm.Password, vm.RememberMe, false);
+
+            if (result.Succeeded)
+            {
+                var user = await _userManager.FindByEmailAsync(vm.Email);
+                if (user != null && await _userManager.IsInRoleAsync(user, "Admin"))
+                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    return Redirect(returnUrl);
+
+                return RedirectToAction("Index", "Home");
+            }
+
+            ModelState.AddModelError(string.Empty, "Invalid email or password.");
+            return View(vm);
+        }
+
+        // POST: /Account/Logout
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
+        // GET: /Account/AccessDenied
+        public IActionResult AccessDenied() => View();
+
+        // GET: /Account/Profile
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return View(user);
+        }
+    }
+}
+
+   builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+   {
+       options.Password.RequiredLength = 6;
+       options.Password.RequireDigit = true;
+       options.Password.RequireUppercase = false;
+       options.Password.RequireNonAlphanumeric = false;
+       options.User.RequireUniqueEmail = true;
+   })
+   .AddEntityFrameworkStores<AppDbContext>()
+   .AddDefaultTokenProviders();
+
+   // Cookie settings
+   builder.Services.ConfigureApplicationCookie(options =>
+   {
+       options.LoginPath = "/Account/Login";
+       options.LogoutPath = "/Account/Logout";
+       options.AccessDeniedPath = "/Account/AccessDenied";
+       options.ExpireTimeSpan = TimeSpan.FromDays(7);
+       options.SlidingExpiration = true;
+   });
+   
+  seeding admin user
+  using (var scope = app.Services.CreateScope())
+  {
+      var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+      var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+
+      string[] roles = { "Admin", "Customer" };
+      foreach (var role in roles)
+      {
+          if (!await roleManager.RoleExistsAsync(role))
+              await roleManager.CreateAsync(new IdentityRole(role));
+      }
+
+      var adminEmail = "admin@shop.com";
+      var adminUser = await userManager.FindByEmailAsync(adminEmail);
+      if (adminUser == null)
+      {
+          adminUser = new AppUser
+          {
+              UserName = adminEmail,
+              Email = adminEmail,
+              FullName = "System Admin",
+              EmailConfirmed = true
+          };
+          var result = await userManager.CreateAsync(adminUser, "Admin@123");
+          if (result.Succeeded)
+              await userManager.AddToRoleAsync(adminUser, "Admin");
+      }
+  }

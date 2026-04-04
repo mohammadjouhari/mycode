@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <div class="mb-3">
+    <label class="form-label">Password</label>
+    <input type="password" id="passwordInput" class="form-control" placeholder="Enter password">
+    <div class="progress mt-2" style="height: 5px;">
+        <div id="strengthBar" class="progress-bar" role="progressbar" style="width: 1%"></div>
+    </div>
+    <small id="strengthText" class="form-text text-muted">Enter a password</small>
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+
+$( document ).ready(function() {
+ $( "#hi" ).click(function() {
+    $("#alert-div").toggle();
+ });
+ 
+ const passwordInput = document.getElementById('passwordInput');
+const strengthBar = document.getElementById('strengthBar');
+const strengthText = document.getElementById('strengthText');
+
+passwordInput.addEventListener('input', () => {
+    const val = passwordInput.value;
+    const score = checkPasswordStrength(val);
+    
+    // Calculate percentage for Bootstrap bar
+    const pct = (score / 5) * 100;
+    strengthBar.style.width = pct + "%";
+    
+
+    // Change color and text based on score
+    if (score <= 2) {
+        strengthBar.className = "progress-bar bg-danger";
+        strengthText.innerText = "Weak";
+    } else if (score <= 4) {
+        strengthBar.className = "progress-bar bg-warning";
+        strengthText.innerText = "Medium";
+    } else {
+        strengthBar.className = "progress-bar bg-success";
+        strengthText.innerText = "Strong";
+    }
+});
+ 
+     function checkPasswordStrength(password) {
+      let score = 0;
+      if (!password) return { score: 0, label: "Empty" };
+    
+      // 1. Length Check
+      if (password.length > 6) score++;
+      if (password.length > 10) score++;
+    
+      // 2. Complexity Checks (Regex)
+      const criteria = [
+        /[a-z]/,      // Lowercase letter
+        /[A-Z]/,      // Uppercase letter
+        /[0-9]/,      // Digit
+        /[^A-Za-z0-9]/ // Special character
+      ];
+    
+      criteria.forEach(regex => {
+        if (regex.test(password)) score++;
+      });
+    
+      // Map score to strength labels
+      const labels = ["Very Weak", "Weak", "Fair", "Strong", "Very Strong", "Excellent"];
+      
+      return score;
+    }
+     
+ 
+ 
+ 
+});

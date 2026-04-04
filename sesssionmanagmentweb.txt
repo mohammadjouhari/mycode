@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>Hello, world!</title>
+  </head>
+  <body>
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .session-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 5px solid #0d6efd;
+        }
+        .session-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 0.4em 0.8em;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="#"><i class="bi bi-calendar-event me-2"></i>Dashboard</a>
+    </div>
+</nav>
+
+<div class="container pb-5">
+    <div class="row g-4">
+        <div class="col-lg-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Filters</h5>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">CATEGORY</label>
+                        <select id="categoryFilter" class="form-select">
+                            <option selected>All Sessions</option>
+                            <option>Cardio</option>
+                            <option>Strength</option>
+                            <option>Yoga</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold">DATE</label>
+                        <input type="date" class="form-control">
+                    </div>
+                    <button id="applyFilters" class="btn btn-primary w-100">Apply Filters</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h4 mb-0">Available Sessions</h2>
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#sessionModal">
+                    <i class="bi bi-plus-lg"></i> Book New
+                </button>
+            </div>
+
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col">
+                    <div class="card h-100 session-card border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-primary-soft text-primary border border-primary status-badge">Morning</span>
+                                <span class="text-muted small"><i class="bi bi-clock me-1"></i> 08:00 AM</span>
+                            </div>
+                            <h5 class="card-title">High Intensity Training</h5>
+                            <p class="card-text text-muted small">A fast-paced session designed to boost cardiovascular health and endurance.</p>
+                            <div class="d-flex align-items-center mt-3 text-secondary small">
+                                <i class="bi bi-person-circle me-2"></i>
+                                <span>Coach Alex</span>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pb-3">
+                            <button class="btn btn-outline-primary btn-sm w-100">View Details</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card h-100 session-card border-0 shadow-sm" style="border-left-color: #198754;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge text-success border border-success status-badge">Afternoon</span>
+                                <span class="text-muted small"><i class="bi bi-clock me-1"></i> 02:30 PM</span>
+                            </div>
+                            <h5 class="card-title">Power Lifting Basics</h5>
+                            <p class="card-text text-muted small">Focus on compound movements and proper form for heavy lifting.</p>
+                            <div class="d-flex align-items-center mt-3 text-secondary small">
+                                <i class="bi bi-person-circle me-2"></i>
+                                <span>Coach Sarah</span>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pb-3">
+                            <button class="btn btn-outline-primary btn-sm w-100">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="sessionModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Book a Session</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="sessionForm">
+                    <div class="mb-3">
+                        <label class="form-label">Choose Type</label>
+                        <select class="form-select">
+                            <option>Personal Training</option>
+                            <option>Group Class</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Preferred Time</label>
+                        <input type="time" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Confirm Booking</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container mt-4">
+    <div class="card p-4">
+        <h3 class="mb-4">Session Management List</h3>
+        
+        <table id="sessionTable" class="table table-striped nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Session ID</th>
+                    <th>Trainer</th>
+                    <th>Category</th>
+                    <th>Schedule</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#1001</td>
+                    <td>Alex Johnson</td>
+                    <td>Strength</td>
+                    <td>2026-03-22 08:00 AM</td>
+                    <td><span class="badge bg-success">Confirmed</span></td>
+                    <td><button class="btn btn-sm btn-outline-primary">Edit</button></td>
+                </tr>
+                <tr>
+                    <td>#1002</td>
+                    <td>Sarah Miller</td>
+                    <td>Yoga</td>
+                    <td>2026-03-22 10:30 AM</td>
+                    <td><span class="badge bg-warning text-dark">Pending</span></td>
+                    <td><button class="btn btn-sm btn-outline-primary">Edit</button></td>
+                </tr>
+                <tr>
+                    <td>#1003</td>
+                    <td>Michael Chen</td>
+                    <td>Cardio</td>
+                    <td>2026-03-23 09:00 AM</td>
+                    <td><span class="badge bg-danger">Cancelled</span></td>
+                    <td><button class="btn btn-sm btn-outline-primary">Edit</button></td>
+                </tr>
+                <tr>
+                    <td>#1004</td>
+                    <td>Alex Johnson</td>
+                    <td>CrossFit</td>
+                    <td>2026-03-23 05:00 PM</td>
+                    <td><span class="badge bg-success">Confirmed</span></td>
+                    <td><button class="btn btn-sm btn-outline-primary">Edit</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script>
+   $(document).ready(function() {
+    // 1. Initialize and assign to a variable
+    var table = $('#sessionTable').DataTable({
+        responsive: true,
+        pageLength: 5,
+        language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Search sessions...",
+        },
+        order: [[3, 'desc']],
+        columnDefs: [
+            { orderable: false, targets: 5 } 
+        ]
+    });
+
+    // 2. The handler MUST be inside here to "see" the 'table' variable
+    $('#applyFilters').on('click', function() {
+        var categoryValue = $('#categoryFilter').val();
+        var dateValue = $('#dateFilter').val();
+
+        // If the user selects "All Sessions", clear the category search
+        if (categoryValue === "All Sessions") {
+            table.column(2).search('');
+        } else {
+            table.column(2).search(categoryValue);
+        }
+
+        // Apply Date Filter (Column index 3)
+        table.column(3).search(dateValue);
+
+        // Finalize and refresh the view
+        table.draw();
+    });
+});
+</script>
+</body>
+</html>
+  </body>
+</html>

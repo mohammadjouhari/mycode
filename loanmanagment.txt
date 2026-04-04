@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <title>Hello, world!</title>
+  </head>
+  <body>
+  <button class="btn btn-primary btn-sm rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#loanModal">
+    + New Loan
+</button>
+    
+    
+<div class="d-flex" id="wrapper">
+    <div class="bg-dark border-end text-white" id="sidebar-wrapper" style="min-width: 250px; min-height: 100vh;">
+        <div class="sidebar-heading p-4 fs-4 fw-bold border-bottom border-secondary">
+            <i class="bi bi-bank me-2"></i>LoanPro
+        </div>
+        <div class="list-group list-group-flush p-3">
+            <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-3 active">
+                <i class="bi bi-speedometer2 me-2"></i> Dashboard
+            </a>
+            <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-3">
+                <i class="bi bi-people me-2"></i> Borrowers
+            </a>
+            <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-3">
+                <i class="bi bi-cash-stack me-2"></i> Active Loans
+            </a>
+            <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-3">
+                <i class="bi bi-calendar-check me-2"></i> Repayments
+            </a>
+            <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-3 mt-5">
+                <i class="bi bi-gear me-2"></i> Settings
+            </a>
+        </div>
+    </div>
+
+    <div id="page-content-wrapper" class="w-100 bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-4 py-3">
+            <div class="container-fluid">
+                <button class="btn btn-outline-dark btn-sm me-3 d-lg-none" id="menu-toggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h4 class="mb-0">System Overview</h4>
+                <div class="ms-auto d-flex align-items-center">
+                    <span class="me-3 d-none d-md-block text-muted small">Wednesday, March 18, 2026</span>
+                    <div class="dropdown">
+                        <img src="https://ui-avatars.com/api/?name=Admin" class="rounded-circle border" width="35">
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid p-4">
+            
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm p-3">
+                        <small class="text-muted fw-bold">TOTAL DISBURSED</small>
+                        <h3 class="fw-bold text-primary">$1.2M</h3>
+                        <div class="progress mt-2" style="height: 5px;">
+                            <div class="progress-bar" style="width: 70%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm p-3">
+                        <small class="text-muted fw-bold">ACTIVE LOANS</small>
+                        <h3 class="fw-bold text-success">482</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm p-3">
+                        <small class="text-muted fw-bold">PENDING APPROVAL</small>
+                        <h3 class="fw-bold text-warning">12</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm p-3">
+                        <small class="text-muted fw-bold">OVERDUE</small>
+                        <h3 class="fw-bold text-danger">5</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-white py-3 border-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold">Recent Loan Applications</h5>
+                        <button class="btn btn-primary btn-sm rounded-pill px-3">+ New Loan</button>
+                    </div>
+                </div>
+                <div class="table-responsive p-3">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Borrower</th>
+                                <th>Amount</th>
+                                <th>Interest</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="fw-bold text-dark">John Doe</div>
+                                    <small class="text-muted">ID: #8821</small>
+                                </td>
+                                <td>$5,000</td>
+                                <td>12%</td>
+                                <td><span class="badge bg-success-subtle text-success px-3">Approved</span></td>
+                                <td><button class="btn btn-light btn-sm border">View</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="fw-bold text-dark">Sarah Smith</div>
+                                    <small class="text-muted">ID: #9902</small>
+                                </td>
+                                <td>$12,500</td>
+                                <td>10%</td>
+                                <td><span class="badge bg-warning-subtle text-warning px-3">Pending</span></td>
+                                <td><button class="btn btn-light btn-sm border">View</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="loanModal" tabindex="-1" aria-labelledby="loanModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="loanModalLabel">Loan Application Details</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="loanForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Borrower Name</label>
+                            <input type="text" class="form-control" placeholder="e.g. John Doe" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Borrower ID</label>
+                            <input type="text" class="form-control" placeholder="#0000">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Loan Amount ($)</label>
+                            <input type="number" class="form-control" placeholder="5000" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Interest Rate (%)</label>
+                            <input type="number" class="form-control" placeholder="12">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Duration (Months)</label>
+                            <select class="form-select">
+                                <option value="6">6 Months</option>
+                                <option value="12">12 Months</option>
+                                <option value="24">24 Months</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Application Status</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusPending" checked>
+                                    <label class="form-check-label" for="statusPending">Pending</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusApproved">
+                                    <label class="form-check-label" for="statusApproved">Approved</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Internal Notes</label>
+                            <textarea class="form-control" rows="3" placeholder="Credit score check, collateral details..."></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer bg-light border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="loanForm" class="btn btn-primary px-4">Save Application</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+      <script>document.addEventListener("DOMContentLoaded", function() {
+    const menuToggle = document.getElementById("menu-toggle");
+    const wrapper = document.getElementById("wrapper");
+
+    if (menuToggle) {
+        menuToggle.addEventListener("click", function(e) {
+            e.preventDefault();
+            wrapper.classList.toggle("toggled");
+        });
+    }
+});</script>
+  </body>
+</html>
