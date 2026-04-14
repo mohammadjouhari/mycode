@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
+    <link rel="stylesheet" href="styles.css">
+    <title>Hello, world!</title>
+  </head>
+  <body>
+ <div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <button class="btn btn-sm btn-success" onclick="createNewNode()">+ Add Root</button>
+            </div>
+            <div class="card-body">
+                <div id="adminTree"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div id="editorContainer">
+            <form id="nodeForm">
+                <input type="hidden"a id="nodeId">
+                <div class="mb-3">
+                    <label>Node Name</label>
+                    <input type="text" class="form-control" id="nodeText">
+                </div>
+                <button type="button" class="btn btn-primary" onclick="saveNode()">Save Changes</button>
+                <button type="button" class="btn btn-danger" onclick="deleteNode()">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.17/jstree.min.js" integrity="sha512-Rzhxh2sskKwa+96nRopp/hvGexBzEPG6mnFI6uRy059FZfksJJFYmqDFn050KUDhivXLsT6SvoaEf5iSp2SHjg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+$(document).ready(function () {
+    $('#adminTree').jstree({
+        'core': {
+            'check_callback': true,
+            'data': [
+                { "id": "1", "parent": "#", "text": "Example Root" }
+            ]
+        },
+        'plugins': ["wholerow", "contextmenu"] 
+    });
+
+    $('#adminTree').on("select_node.jstree", function (e, data) {
+        $('#nodeId').val(data.node.id);
+        $('#nodeText').val(data.node.text);
+    });
+});
+
+// Function to add a ROOT node
+function createNewNode() {
+    var tree = $('#adminTree').jstree(true);
+    var newNodeId = tree.create_node("#", { "text": "New Root" }, "last");
+    if(newNodeId) tree.edit(newNodeId);
+}
+
+// Function to add a CHILD node to the currently selected node
+function createChildNode() {
+    var tree = $('#adminTree').jstree(true);
+    var sel = tree.get_selected();
+    if(!sel.length) { alert("Please select a parent node first"); return; }
+    
+    var newNodeId = tree.create_node(sel[0], { "text": "New Child" }, "last");
+    if(newNodeId) {
+        tree.open_node(sel[0]);
+        tree.edit(newNodeId);
+    }
+}
+
+function saveNode() {
+    var tree = $('#adminTree').jstree(true);
+    var id = $('#nodeId').val();
+    var newText = $('#nodeText').val();
+
+    if (id) {
+        tree.rename_node(id, newText);
+        
+        // 1. Get raw flat JSON
+        var rawData = tree.get_json('#', { flat: true });
+
+        // 2. Clean the JSON to have ONLY id, text, and parent
+        var cleanJson = rawData.map(function(node) {
+            return {
+                id: node.id,
+                text: node.text,
+                parent: node.parent
+            };
+        });
+
+        console.log("Clean JSON for Backend:", cleanJson);
+        // This cleanJson is what you send to your .NET Controller
+    }
+}

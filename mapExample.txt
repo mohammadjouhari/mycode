@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <title>Hello, world!</title>
+  </head>
+  <style>
+    #map { 
+    height: 500px; /* Or any height you prefer */
+    width: 100%;   /* Ensure it takes full width of its Bootstrap column */
+}
+  </style>
+  <body>
+  
+
+    <div  id="map">
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" integrity="sha512-BwHfrr4c9kmRkLw6iXFdzcdWV/PGkVgiIyIWLLlTSXzWQzxuSg4DiQUCpauz/EWjgk5TYQqX/kvn9pG1NpYfqg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+
+
+var map = L.map('map').setView([25.2048, 55.2708], 13); // Centered on Dubai
+
+// 2. Add the OpenStreetMap tiles (The "Skin")
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+// 3. Add a marker for your office or a project location
+L.marker([25.2048, 55.2708]).addTo(map)
+    .bindPopup('Mohammad Jouhari - Web Dev')
+    .openPopup();

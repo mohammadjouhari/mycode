@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <title>Hello, world!</title>
+  </head>
+  <body>
+   <section class="py-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold text-uppercase">Product Gallery</h2>
+      <p class="text-muted">High-quality essentials for your daily routine.</p>
+    </div>
+
+    <div class="row g-4"> <div class="col-sm-6 col-md-6 col-lg-6">
+        <div class="card border-0 shadow-sm">
+          <img src="https://media.cnn.com/api/v1/images/stellar/prod/170314110025-camel-racing-tease.jpg?q=w_3713,h_2178,x_0,y_0,c_fill" class="card-img-top rounded shadow-sm hover-zoom" alt="Product 1">
+          <div class="card-body px-0">
+             <p class="small fw-bold mb-0">SKIN CARE</p>
+             <h6 class="card-title">Hydrating Serum</h6>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-md-6 col-lg-6">
+        <div class="card border-0 shadow-sm">
+          <img src="https://media.cnn.com/api/v1/images/stellar/prod/170314110025-camel-racing-tease.jpg?q=w_3713,h_2178,x_0,y_0,c_fill" class="card-img-top rounded shadow-sm" alt="Product 2">
+          <div class="card-body px-0">
+             <p class="small fw-bold mb-0">BODY CARE</p>
+             <h6 class="card-title">Revitalizing Lotion</h6>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-md-6 col-lg-6">
+        <div class="card border-0 shadow-sm">
+          <img src="https://media.cnn.com/api/v1/images/stellar/prod/170314110025-camel-racing-tease.jpg?q=w_3713,h_2178,x_0,y_0,c_fill" class="card-img-top rounded shadow-sm" alt="Product 3">
+          <div class="card-body px-0">
+             <p class="small fw-bold mb-0">HAIR CARE</p>
+             <h6 class="card-title">Shine Shampoo</h6>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-md-6 col-lg-6">
+        <div class="card border-0 shadow-sm">
+          <img src="https://media.cnn.com/api/v1/images/stellar/prod/170314110025-camel-racing-tease.jpg?q=w_3713,h_2178,x_0,y_0,c_fill" class="card-img-top rounded shadow-sm" alt="Product 4">
+          <div class="card-body px-0">
+             <p class="small fw-bold mb-0">VITAMINS</p>
+             <h6 class="card-title">Daily Multi-Vitamin</h6>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+
+body{
+   padding: 25px;
+}
+
+h1 {
+ padding-bottom: 15px;
+}
+
+.alert {
+ margin-top: 25px;
+}
+.hover-zoom {
+  transition: transform .3s ease;
+}
+
+.hover-zoom:hover {
+  transform: scale(1.05); /* Slight zoom on hover */
+  cursor: pointer;
+}
+/* Add this to your styles.css */
+.card-img-top {
+    width: 100%;
+    height: 350px;       /* Increase this value to make the box taller */
+    object-fit: cover;   /* This is CRITICAL: it prevents the image from stretching */
+    object-position: center;
+}
+
+.card {
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Lift the box slightly on hover */
+}

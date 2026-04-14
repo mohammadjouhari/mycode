@@ -1,0 +1,111 @@
+Since you are already comfortable with Bootstrap and jQuery, integrating jsTree is a great way to handle hierarchical data—like a file explorer for your LibraryManagement project or a category tree for your E-Shop.
+
+Here is a complete, single-file sample. It uses a Mock JSON structure and the default Bootstrap-compatible styling.
+
+1. The Complete HTML/JS Sample
+HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jsTree Implementation Sample</title>
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
+    
+    <style>
+        .tree-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            min-height: 300px;
+        }
+        #event-log {
+            background: #222;
+            color: #0f0;
+            padding: 10px;
+            font-family: monospace;
+            height: 150px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h4 class="mb-4">Category Explorer</h4>
+            <div class="tree-container shadow-sm">
+                <div id="data-tree"></div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <h4 class="mb-4">Selection Details</h4>
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <p id="selection-text">Select a node to see its ID and details.</p>
+                    <button id="get-selected-btn" class="btn btn-primary btn-sm">Get Selected ID</button>
+                </div>
+            </div>
+            <h6>Event Log:</h6>
+            <div id="event-log" class="rounded"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // 1. Sample JSON Data structure
+        const treeData = [
+            { "id": "ajson1", "parent": "#", "text": "E-Shop Products", "state": { "opened": true } },
+            { "id": "ajson2", "parent": "ajson1", "text": "Electronics" },
+            { "id": "ajson3", "parent": "ajson1", "text": "Fashion" },
+            { "id": "ajson4", "parent": "ajson2", "text": "Laptops", "icon": "glyphicon glyphicon-leaf" },
+            { "id": "ajson5", "parent": "ajson2", "text": "Smartphones" },
+            { "id": "ajson6", "parent": "ajson3", "text": "Menswear" },
+            { "id": "ajson7", "parent": "ajson3", "text": "Accessories" }
+        ];
+
+        // 2. Initialize jsTree
+        $('#data-tree').jstree({
+            'core': {
+                'data': treeData,
+                'check_callback': true, // allows us to modify the tree
+                'themes': {
+                    'name': 'default',
+                    'responsive': true
+                }
+            },
+            'plugins': ['search', 'types', 'wholerow']
+        });
+
+        // 3. Handle selection events
+        $('#data-tree').on("changed.jstree", function (e, data) {
+            if(data.selected.length) {
+                const node = data.instance.get_node(data.selected[0]);
+                $('#selection-text').html(`Selected: <strong>${node.text}</strong> (ID: ${node.id})`);
+                logEvent(`User selected: ${node.text}`);
+            }
+        });
+
+        // 4. Manual trigger
+        $('#get-selected-btn').click(function() {
+            const selectedNode = $('#data-tree').jstree('get_selected');
+            alert("Selected ID: " + selectedNode);
+        });
+
+        function logEvent(msg) {
+            const timestamp = new Date().toLocaleTimeString();
+            $('#event-log').prepend(`[${timestamp}] ${msg}<br>`);
+        }
+    });
+</script>
+
+</body>
+</html>
