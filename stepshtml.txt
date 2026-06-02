@@ -1,20 +1,66 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="styles.css">
-    <title>Hello, world!</title>
-  </head>
-  <body>
-<div class="container mt-5">
-    <div class="stepper-wrapper">
-        <div class="stepper-item completed">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Step Form Wizard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Minimal Stepper Styling to connect the numbers */
+        .stepper-wrapper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        .stepper-item {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        .stepper-item::before {
+            position: absolute;
+            content: "";
+            border-bottom: 2px solid #ccc;
+            width: 100%;
+            top: 20px;
+            left: -50%;
+            z-index: 1;
+        }
+        .stepper-item:first-child::before { content: none; }
+        .step-counter {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ccc;
+            color: white;
+            margin-bottom: 6px;
+        }
+        .stepper-item.active .step-counter { background: #0d6efd; }
+        .stepper-item.completed .step-counter { background: #198754; }
+        .stepper-item.completed::before { border-bottom-color: #198754; }
+        
+        /* Form Step visibility toggles */
+        .form-step { display: none; }
+        .form-step.active { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5" style="max-width: 700px;">
+    
+    <div class="stepper-wrapper" id="stepper">
+        <div class="stepper-item active">
             <div class="step-counter">1</div>
             <div class="step-name">Account</div>
         </div>
-        <div class="stepper-item active">
+        <div class="stepper-item">
             <div class="step-counter">2</div>
             <div class="step-name">Profile</div>
         </div>
@@ -31,89 +77,134 @@
             <div class="step-name">Finish</div>
         </div>
     </div>
+
+    <form id="multiStepForm" class="card p-4 shadow-sm" novalidate>
+        
+        <div class="form-step active">
+            <h4>Account Details</h4>
+            <div class="mb-3">
+                <label class="form-label">Email address</label>
+                <input type="email" class="form-control" required placeholder="name@example.com">
+                <div class="invalid-feedback">Please enter a valid email.</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" required minlength="6">
+                <div class="invalid-feedback">Password must be at least 6 characters.</div>
+            </div>
+        </div>
+
+        <div class="form-step">
+            <h4>Profile Information</h4>
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" required>
+                <div class="invalid-feedback">Your name is required.</div>
+            </div>
+        </div>
+
+        <div class="form-step">
+            <h4>Select a Plan</h4>
+            <div class="mb-3">
+                <select class="form-select" required>
+                    <option value="" selected disabled>Choose your tier...</option>
+                    <option value="basic">Basic ($9/mo)</option>
+                    <option value="pro">Pro ($29/mo)</option>
+                </select>
+                <div class="invalid-feedback">Please choose a tier option.</div>
+            </div>
+        </div>
+
+        <div class="form-step">
+            <h4>Payment details</h4>
+            <div class="mb-3">
+                <label class="form-label">Credit Card Number</label>
+                <input type="text" class="form-control" required placeholder="0000 0000 0000 0000">
+                <div class="invalid-feedback">A valid payment card is required.</div>
+            </div>
+        </div>
+
+        <div class="form-step text-center">
+            <h4>All Done!</h4>
+            <p class="text-muted">Review your choices and submit your registration details.</p>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4 border-top pt-3">
+            <button type="button" class="btn btn-secondary" id="prevBtn" disabled>Back</button>
+            <button type="button" class="btn btn-primary" id="nextBtn">Next Step</button>
+        </div>
+    </form>
 </div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
-    <script src="script.js"></script>
-  </body>
-</html>
+<script>
+    const formSteps = document.querySelectorAll(".form-step");
+    const stepperItems = document.querySelectorAll(".stepper-item");
+    const nextBtn = document.getElementById("nextBtn");
+    const prevBtn = document.getElementById("prevBtn");
+    const form = document.getElementById("multiStepForm");
+    
+    let currentStep = 0;
 
+    function updateStepView() {
+        // Toggle active visual states on form panel views
+        formSteps.forEach((step, index) => {
+            step.classList.toggle("active", index === currentStep);
+        });
 
+        // Sync visual completion UI states on your provided stepper items
+        stepperItems.forEach((item, index) => {
+            item.classList.toggle("active", index === currentStep);
+            item.classList.toggle("completed", index < currentStep);
+        });
 
-body{
-   padding: 25px;
-}
-
-h1 {
- padding-bottom: 15px;
-}
-
-.alert {
- margin-top: 25px;
-}
-.stepper-wrapper {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-.stepper-item {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-}
-/* The connector line */
-.stepper-item::before {
-    position: absolute;
-    content: "";
-    border-bottom: 2px solid #ccc;
-    width: 100%;
-    top: 20px;
-    left: -50%;
-    z-index: 2;
-}
-.stepper-item:first-child::before { content: none; }
-
-.step-counter {
-    position: relative;
-    z-index: 5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #ccc;
-    margin-bottom: 6px;
-    color: white;
-    font-weight: bold;
-}
-
-/* Active and Completed States */
-.stepper-item.active .step-counter { background-color: #0d6efd; }
-.stepper-item.completed .step-counter { background-color: #198754; }
-.stepper-item.completed::before { border-bottom-color: #198754; }
-
-.step-name { color: #6c757d; font-size: 14px; }
-.active .step-name { color: #0d6efd; font-weight: bold; }
-
-
-function goToStep(stepNumber) {
-    const items = document.querySelectorAll('.stepper-item');
-    items.forEach((item, index) => {
-        if (index < stepNumber - 1) {
-            item.classList.add('completed');
-            item.classList.remove('active');
-        } else if (index === stepNumber - 1) {
-            item.classList.add('active');
-            item.classList.remove('completed');
+        // Adjust back/forward buttons text configurations
+        prevBtn.disabled = currentStep === 0;
+        
+        if (currentStep === formSteps.length - 1) {
+            nextBtn.textContent = "Submit Form";
+            nextBtn.classList.replace("btn-primary", "btn-success");
         } else {
-            item.classList.remove('active', 'completed');
+            nextBtn.textContent = "Next Step";
+            nextBtn.classList.replace("btn-success", "btn-primary");
+        }
+    }
+
+    // Custom helper engine checking constraints inside current panel space only
+    function isCurrentStepValid() {
+        const activeFields = formSteps[currentStep].querySelectorAll("input, select, textarea");
+        let valid = true;
+        
+        activeFields.forEach(field => {
+            if (!field.checkValidity()) {
+                valid = false;
+                field.classList.add("is-invalid");
+            } else {
+                field.classList.remove("is-invalid");
+            }
+        });
+        return valid;
+    }
+
+    nextBtn.addEventListener("click", () => {
+        if (!isCurrentStepValid()) return; // Stop user from progressing if inputs are incomplete
+
+        if (currentStep < formSteps.length - 1) {
+            currentStep++;
+            updateStepView();
+        } else {
+            // Reaching step 5 triggers actual processing
+            alert("Form completely submitted! Sending tracking data to server payload...");
+            form.submit();
         }
     });
-}
+
+    prevBtn.addEventListener("click", () => {
+        if (currentStep > 0) {
+            currentStep--;
+            updateStepView();
+        }
+    });
+</script>
+
+</body>
+</html>
