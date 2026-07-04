@@ -10,27 +10,32 @@
     
     <style>
         /* 1. Custom Deep Dark Blue Shade */
+   
         .bg-dark-blue {
-            background-color: #0d1b2a; 
+            background-color: #0d1b2a !important; 
         }
 
-        /* 2. Lock the sidebar to the left side of the screen */
+        /* 2. Style the sidebar structure */
         .sidebar {
             width: 260px;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 100;
         }
 
-        /* 3. Push the main content box over so it doesn't hide behind the sidebar */
-        .main-content {
-            margin-left: 260px;
-            padding: 30px;
+        @media (min-width: 768px) {
+            .sidebar {
+                height: 100vh;
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 1000;
+            }
+            
+            /* Shifts the main content over so it doesn't get buried under the fixed sidebar */
+            .main-content {
+                margin-left: 260px;
+            }
         }
 
-        /* 4. Style the links inside the sidebar */
+        /* 3. Style the links inside the sidebar */
         .sidebar .nav-link {
             color: rgba(255, 255, 255, 0.7) !important; /* Semi-transparent white */
             transition: all 0.2s ease;
@@ -38,86 +43,97 @@
             margin-bottom: 4px;
         }
 
-        /* 5. Highlight links on hover */
+        /* 4. Highlight links on hover */
         .sidebar .nav-link:hover {
             background-color: rgba(255, 255, 255, 0.1); /* Subtle white glow */
             color: #ffffff !important; /* Solid bright white text */
         }
 
-        /* 6. Active link page highlighting */
+        /* 5. Active link page highlighting */
         .sidebar .nav-link.active {
             background-color: #00b4d8 !important; /* Bright blue highlight */
             color: #ffffff !important;
             font-weight: bold;
         }
-
-        /* 7. Mobile View: Stack them vertically if screen is small */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-            .main-content {
-                margin-left: 0;
-            }
-        }
     </style>
 </head>
-<body>
+<body class="bg-light">
 
-      <div class="sidebar bg-dark-blue d-flex flex-column p-3">
-          
-          <a href="#" class="d-flex align-items-center text-white text-decoration-none px-2 py-3">
-              <i class="bi bi-shop fs-4 me-2 text-info"></i>
-              <span class="fs-4 fw-bold">Salma AI</span>
-          </a>
-          
-          <hr class="text-white-50">
-          
-          <ul class="nav nav-pills flex-column mb-auto">
-      <li class="px-3 pt-3 pb-1 text-uppercase fs-7 fw-bold text-white-50 small tracking-wide">
-          operations
-      </li>
-  
-      <li class="nav-item">
-          <a href="#" class="nav-link active">
-              <i class="bi bi-speedometer2 me-2"></i> dashboard
-          </a>
-      </li>
-  
-      <li>
-          <a href="#" class="nav-link">
-              <i class="bi bi-bell text-warning me-2"></i> Alerts
-          </a>
-      </li>
-      <li>
-          <a href="#" class="nav-link">
-              <i class="bi bi-graph-up-arrow text-info me-2"></i> Reports
-          </a>
-      </li>
-      <li>
-          <a href="#" class="nav-link">
-             <i class="bi bi-shield-exclamation text-danger me-2"></i> Violations
-          </a>
-      </li>
-      
-       <li class="px-3 pt-3 pb-1 text-uppercase fs-7 fw-bold text-white-50 small tracking-wide">
-          configuration
-      </li>
-        <li>
-          <a href="#" class="nav-link">
-              <i class="bi bi-people me-2"></i> Users
-          </a>
-      </li>
-  </ul>
-        
-        
-    </div>
+    <!-- Mobile Header Navbar with Hamburger (Visible only on mobile screen < 768px) -->
+    <nav class="navbar navbar-dark bg-dark-blue d-md-none px-3 sticky-top">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <i class="bi bi-shop fs-4 me-2 text-info"></i>
+            <span class="fs-4 fw-bold">Salma AI</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
 
-    <div class="main-content">
-        <h2>Content Panel Title</h2>
-        <p class="text-muted">Your graphs, tables, and product form components go right inside this container block safely.</p>
+    <!-- Layout Wrapper -->
+    <div class="container-fluid p-0">
+        
+        <!-- Sidebar Container (Added 'd-flex' to ensure it renders explicitly on desktop) -->
+        <div class="sidebar offcanvas-md offcanvas-start bg-dark-blue d-flex flex-column p-3 text-white" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+            
+            <!-- Sidebar Brand Header (Hidden on Mobile view since the Navbar handles it) -->
+            <div class="d-none d-md-flex align-items-center px-2 py-3">
+                <i class="bi bi-shop fs-4 me-2 text-info"></i>
+                <span class="fs-4 fw-bold text-white">Salma AI</span>
+            </div>
+            
+            <!-- Mobile Offcanvas Header (Shows a close X button when opened on mobile) -->
+            <div class="offcanvas-header d-md-none justify-content-between px-2">
+                <h5 class="offcanvas-title text-white" id="sidebarMenuLabel">Navigation</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
+            </div>
+            
+            <hr class="text-white-50 d-none d-md-block m-0 my-2">
+            
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="px-3 pt-3 pb-1 text-uppercase fs-7 fw-bold text-white-50 small tracking-wide">
+                    operations
+                </li>
+            
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="bi bi-speedometer2 me-2"></i> dashboard
+                    </a>
+                </li>
+            
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-bell text-warning me-2"></i> Alerts
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-graph-up-arrow text-info me-2"></i> Reports
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-shield-exclamation text-danger me-2"></i> Violations
+                    </a>
+                </li>
+                
+                <li class="px-3 pt-3 pb-1 text-uppercase fs-7 fw-bold text-white-50 small tracking-wide">
+                    configuration
+                </li>
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-people me-2"></i> Users
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content Container Wrapper -->
+        <div class="main-content p-4">
+            <h2>Content Panel Title</h2>
+            <p class="text-muted">Your graphs, tables, and product form components go right inside this container block safely.</p>
+        </div>
+        
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
