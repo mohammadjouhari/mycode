@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    
+<div class="page-stats-grid">
+    <div class="mini-stat-card">
+        <span class="mini-icon blue"><i class="bi bi-credit-card"></i></span>
+        <div>
+            <p>Total Cards</p>
+            <h3>8</h3>
+        </div>
+    </div>
+
+    <div class="mini-stat-card">
+        <span class="mini-icon green"><i class="bi bi-check-circle"></i></span>
+        <div>
+            <p>Active Cards</p>
+            <h3>7</h3>
+        </div>
+    </div>
+
+    <div class="mini-stat-card">
+        <span class="mini-icon red"><i class="bi bi-x-circle"></i></span>
+        <div>
+            <p>Blocked Cards</p>
+            <h3>6</h3>
+        </div>
+    </div>
+
+    <div class="mini-stat-card">
+        <span class="mini-icon orange"><i class="bi bi-hourglass-split"></i></span>
+        <div>
+            <p>Pending Cards</p>
+            <h3>4</h3>
+        </div>
+    </div>
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+
+
+
+.page-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+    margin-bottom: 24px;
+}
+
+.mini-stat-card,
+.panel-card,
+.report-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(5, 30, 80, .08);
+    border: 1px solid #edf2fb;
+}
+
+.mini-stat-card {
+    padding: 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+    .mini-stat-card p {
+        color: #60708f;
+        margin: 0 0 4px;
+    }
+
+    .mini-stat-card h3 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 800;
+        color: #07194f;
+    }

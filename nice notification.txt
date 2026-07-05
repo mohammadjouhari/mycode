@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <div class="sticky-announcement" role="alert">
+  <div class="announcement-content">
+    <span class="badge">New</span>
+    <p class="message">We have updated our system to support the latest framework features! <a href="#">Learn more</a></p>
+  </div>
+  <button class="close-btn" aria-label="Dismiss announcement" onclick="this.parentElement.remove()">&times;</button>
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+.sticky-announcement {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333333;
+  color: #ffffff;
+  padding: 10px 20px; /* Added horizontal padding */
+  z-index: 9999;
+
+  /* Flexbox layout to align elements horizontally */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box; /* Prevents padding from breaking 100% width */
+}
+
+.announcement-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto; /* Keeps the text centered in the bar */
+}
+
+.sticky-announcement p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.sticky-announcement a {
+  color: #4da6ff;
+  text-decoration: underline;
+}
+
+.badge {
+  background-color: #ff4757;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.close-btn:hover {
+  opacity: 1;
+}

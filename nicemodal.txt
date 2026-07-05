@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <div class="modal-overlay" id="customerModal">
+    <div class="custom-modal">
+        <div class="modal-header-box">
+            <div>
+                <h2>Add New Customer</h2>
+                <p>Enter customer personal information.</p>
+            </div>
+
+            <button type="button" class="close-btn" onclick="closeModal('customerModal')">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <form asp-controller="Home" asp-action="AddCustomer" method="post">
+            <div class="modal-form-grid">
+                <div>
+                    <label>First Name</label>
+                    <input name="FirstName" class="form-control" required />
+                </div>
+
+                <div>
+                    <label>Last Name</label>
+                    <input name="LastName" class="form-control" required />
+                </div>
+
+                <div>
+                    <label>Email</label>
+                    <input name="Email" type="email" class="form-control" />
+                </div>
+
+                <div>
+                    <label>Phone</label>
+                    <input name="Phone" class="form-control" required />
+                </div>
+
+                <div>
+                    <label>CNIC</label>
+                    <input name="Cnic" class="form-control" required />
+                </div>
+
+                <div>
+                    <label>Gender</label>
+                    <select name="Gender" class="form-control">
+                        <option value="">Select Gender</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Date of Birth</label>
+                    <input name="DateOfBirth" type="date" class="form-control" />
+                </div>
+
+                <div>
+                    <label>City</label>
+                    <input name="City" class="form-control" />
+                </div>
+
+                <div class="full-input">
+                    <label>Address</label>
+                    <input name="Address" class="form-control" />
+                </div>
+
+                <div>
+                    <label>Country</label>
+                    <input name="Country" class="form-control" value="Pakistan" />
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="cancel-btn" onclick="closeCustomerModal()">Cancel</button>
+                <button type="submit" class="primary-btn">Save Customer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+    
+
+
+
+
+
+.primary-btn {
+    border: none;
+    background: linear-gradient(135deg, #1769ff, #6848ff);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: 700;
+    box-shadow: 0 10px 20px rgba(23, 105, 255, .18);
+}
+
+    .primary-btn i {
+        margin-right: 7px;
+    }
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(7, 25, 79, .45);
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+    .modal-overlay.show {
+        display: flex;
+    }
+
+.custom-modal {
+    width: 850px;
+    max-width: 100%;
+    background: #fff;
+    border-radius: 20px;
+    padding: 26px;
+    box-shadow: 0 20px 60px rgba(5, 30, 80, .25);
+}
+
+.modal-header-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+    .modal-header-box h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 800;
+        color: #07194f;
+    }
+
+    .modal-header-box p {
+        color: #60708f;
+        margin: 6px 0 0;
+    }
+
+.close-btn {
+    border: none;
+    background: #f5f8ff;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    color: #07194f;
+}
+
+.modal-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+    .modal-form-grid label {
+        font-weight: 800;
+        color: #07194f;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .modal-form-grid .form-control {
+        height: 48px;
+        border-radius: 12px;
+        border: 1px solid #dce5f5;
+        font-weight: 600;
+    }
+
+.full-input {
+    grid-column: span 2;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.cancel-btn {
+    border: none;
+    background: #eef3fb;
+    color: #07194f;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .modal-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full-input {
+        grid-column: span 1;
+    }
+}
+
+
+
+    
