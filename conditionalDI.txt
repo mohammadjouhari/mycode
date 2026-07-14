@@ -1,0 +1,49 @@
+No, the code in your Program.cs file still only runs once when the application starts.
+
+To understand why this works, we need to look at the difference between registering a service and resolving a service.
+
+Think of it like a Blueprint vs. Building a House
+When your app starts up, Program.cs runs from top to bottom to create a blueprint (the DI container).
+
+The code outside the lambda function runs once to register the blueprint.
+
+The code inside the lambda function serviceProvider => { ... } is a set of instructions that runs every time a controller asks for that service.
+
+Here is exactly what runs once versus what runs on every request:
+
+C#
+// ==========================================
+// 1. THIS RUNS ONLY ONCE (At Startup)
+// ==========================================
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<NotificationSettings>(builder.Configuration.GetSection("NotificationSettings"));
+builder.Services.AddScoped<EmailNotificationService>();
+builder.Services.AddScoped<SmsNotificationService>();
+
+// Registering the factory blueprint (This statement executes ONCE)
+builder.Services.AddScoped<INotificationService>(serviceProvider =>
+{
+    // ==========================================
+    // 2. THIS INNER CODE RUNS ON EVERY HTTP REQUEST
+    // ==========================================
+    var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<NotificationSettings>>();
+    string activeProvider = optionsMonitor.CurrentValue.Provider;
+
+    return activeProvider switch
+    {
+        "Email" => serviceProvider.GetRequiredService<EmailNotificationService>(),
+        "SMS" => serviceProvider.GetRequiredService<SmsNotificationService>(),
+        _ => throw new InvalidOperationException()
+    };
+    // ==========================================
+});
+
+var app = builder.Build();
+app.Run(); // The startup execution ends here and never restarts.
+In Summary:
+Program.cs execution: Occurs once when you start the app.
+
+The serviceProvider => { ... } lambda block: Evaluates on every HTTP request that requires an INotificationService.
+
+IOptionsMonitor: Does not restart the app or rerun Program.cs. It just ensures that when the inner lambda block does run on a new request, it reads the absolute latest configuration values from memory.
