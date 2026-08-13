@@ -1,0 +1,108 @@
+sing System.Data;
+using Microsoft.Data.SqlClient;
+
+namespace SqlDatabaseBackup;
+
+internal class Program
+{
+    // =========================================================================
+    // CONFIGURATION
+    // =========================================================================
+    private const string ServerName = @"localhost"; // e.g. @".\SQLEXPRESS" or @"localhost"
+    private const string DatabaseName = "YourDatabaseName"; // Change to your target DB
+    private const string BackupDirectory = @"C:\DatabaseBackups"; // Destination folder
+    
+    // Connection string (Windows Authentication / Integrated Security)
+    private static readonly string ConnectionString = 
+        $"Server={ServerName};Database=master;Trusted_Connection=True;TrustServerCertificate=True;";
+
+    // Alternative: SQL Server Authentication
+    // private static readonly string ConnectionString = 
+    //     $"Server={ServerName};Database=master;User Id=sa;Password=YourPassword;TrustServerCertificate=True;";
+    // =========================================================================
+
+    private static async Task Main(string[] args)
+    {
+        Console.WriteLine("==============================================");
+        Console.WriteLine("       SQL SERVER DATABASE BACKUP UTILITY     ");
+        Console.WriteLine("==============================================\n");
+
+        try
+        {
+            // 1. Ensure backup directory exists on disk
+            if (!Directory.Exists(BackupDirectory))
+            {
+                Directory.CreateDirectory(BackupDirectory);
+                Console.WriteLine($"[INFO] Created directory: {BackupDirectory}");
+            }
+
+            // 2. Format a timestamped filename (e.g. YourDB_2026-08-13_210000.bak)
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HHmmss");
+            string backupFileName = $"{DatabaseName}_{timestamp}.bak";
+            string fullBackupPath = Path.Combine(BackupDirectory, backupFileName);
+
+            Console.WriteLine($"[INFO] Target Database : {DatabaseName}");
+            Console.WriteLine($"[INFO] Backup Destination: {fullBackupPath}");
+            Console.WriteLine("[INFO] Starting backup operation...\n");
+
+            // 3. Execute T-SQL Backup Command
+            await ExecuteDatabaseBackupAsync(fullBackupPath);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\n[SUCCESS] Database backup completed successfully!");
+            Console.ResetColor();
+        }
+        catch (SqlException ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\n[SQL ERROR] Backup failed: {ex.Message}");
+            Console.ResetColor();
+        }
+        catch (Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\n[SYSTEM ERROR] An unexpected error occurred: {ex.Message}");
+            Console.ResetColor();
+        }
+
+        Console.WriteLine("\nPress any key to exit...");
+        Console.ReadKey();
+    }
+
+    private static async Task ExecuteDatabaseBackupAsync(string destinationFilePath)
+    {
+        // T-SQL BACKUP Command with STATS = 10 to report progress every 10%
+        string sqlQuery = $@"
+            BACKUP DATABASE [{DatabaseName}]
+            TO DISK = @BackupPath
+            WITH FORMAT,
+                 INIT,
+                 NAME = @BackupName,
+                 SKIP,
+                 NOREWIND,
+                 NOUNLOAD,
+                 STATS = 10;";
+
+        using var connection = new SqlConnection(ConnectionString);
+        
+        // Subscribe to SQL Server InfoMessage events to display backup progress percentage
+        connection.InfoMessage += (sender, e) =>
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($" -> {e.Message}");
+            Console.ResetColor();
+        };
+
+        await connection.OpenAsync();
+
+        using var command = new SqlCommand(sqlQuery, connection);
+        
+        // CommandTimeout set to 0 (infinite) so large databases don't time out
+        command.CommandTimeout = 0;
+        
+        command.Parameters.Add("@BackupPath", SqlDbType.NVarChar).Value = destinationFilePath;
+        command.Parameters.Add("@BackupName", SqlDbType.NVarChar).Value = $"{DatabaseName}-Full Database Backup";
+
+        await command.ExecuteNonQueryAsync();
+    }
+}

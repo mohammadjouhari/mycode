@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <title>Loading Spinner</title>
+
+    <style>
+      /* Full-screen backdrop centered over the viewport */
+      .neon-loading-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent backdrop */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999;
+      }
+
+      /* Circular Spinner */
+      .neon-loading-bar span {
+        display: block;
+        width: 48px;
+        height: 48px;
+        border: 5px solid rgba(0, 123, 255, 0.2); /* Light blue track */
+        border-top-color: #007bff;                  /* Solid blue accent */
+        border-radius: 50%;
+        animation: spin-animation 0.8s linear infinite;
+      }
+
+      /* Continuous rotation */
+      @keyframes spin-animation {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .neon-loading-bar.progress-is-hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Required JavaScript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" crossorigin="anonymous"></script>
+
+    <script>
+      function show_loading_bar() {
+        var $loading_bar = $(".neon-loading-bar");
+        if ($loading_bar.length === 0) {
+          $loading_bar = $('<div class="neon-loading-bar"><span class="bar"></span></div>');
+          $("body").append($loading_bar);
+        }
+        $loading_bar.removeClass('progress-is-hidden');
+      }
+
+      function hide_loading_bar() {
+        $(".neon-loading-bar").addClass('progress-is-hidden');
+      }
+
+      // Show spinner on start
+      show_loading_bar();
+
+      // Automatically hide the spinner after 5 seconds (5000 ms)
+      setTimeout(function() {
+        hide_loading_bar();
+      }, 100);
+    </script>
+  </body>
+</html>

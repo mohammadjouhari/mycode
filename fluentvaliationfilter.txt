@@ -1,0 +1,35 @@
+public class ValidationFilter<T> : IAsyncActionFilter where T : class
+{
+    private readonly IValidator<T>? _validator;
+
+    public ValidationFilter(IValidator<T>? validator = null)
+    {
+        _validator = validator;
+    }
+
+    public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    {
+        var argument = context.ActionArguments.Values.FirstOrDefault(x => x is T) as T;
+
+        if (_validator != null && argument != null)
+        {
+            var result = await _validator.ValidateAsync(argument);
+
+            if (!result.IsValid)
+            {
+                context.Result = new BadRequestObjectResult(result.ToDictionary());
+                return; // short-circuit — don't call next()
+            }
+        }
+
+        await next(); // continue to the actual action method
+    }
+}
+
+[TypeFilter(typeof(ValidationFilter<Person>))]
+[HttpPost]
+public async Task<IActionResult> Create(Person person)
+{
+    _repository.Save(person);
+    return RedirectToAction("Index");
+}
