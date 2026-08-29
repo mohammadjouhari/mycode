@@ -1,0 +1,40 @@
+[
+  {
+    "objectID": "prod_104",
+    "Name": "A",
+    "Category": "Electronics",
+    "Brand": "AudioTech",
+    "Price": 199.99,
+    "InStock": true,
+    "Tags": [
+      "audio",
+      "bluetooth",
+      "wireless"
+    ]
+  },
+  {
+    "objectID": "prod_105",
+    "Name": "B",
+    "Category": "Electronics",
+    "Brand": "KeyPro",
+    "Price": 129.50,
+    "InStock": true,
+    "Tags": [
+      "gaming",
+      "office",
+      "peripherals"
+    ]
+  },
+  {
+    "objectID": "prod_106",
+    "Name": "XC",
+    "Category": "Fitness & Outdoor",
+    "Brand": "HydroGear",
+    "Price": 24.99,
+    "InStock": false,
+    "Tags": [
+      "hydration",
+      "eco-friendly"
+    ]
+  }
+]

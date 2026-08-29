@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EDB Bank - Loan Management System</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- DataTables CSS -->
+  <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+  <style>
+    body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .navbar { background-color: #0d233a; }
+    .card-metric { border: none; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .badge-shzp { background-color: #008080; color: #fff; }
+    .badge-edb { background-color: #1a5276; color: #fff; }
+    .action-btn { cursor: pointer; margin: 0 3px; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav class="navbar navbar-dark mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold ms-2" href="#">
+        <i class="bi bi-bank me-2"></i> EDB Bank | Loan Management Portal
+      </a>
+    </div>
+  </nav>
+
+  <div class="container-fluid px-4">
+
+    <!-- Header & Summary Cards -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h3 class="fw-bold text-dark m-0">Loan Applications & Portfolio</h3>
+        <p class="text-muted small m-0">Manage and track SHZP and EDB bank loans</p>
+      </div>
+      <button class="btn btn-primary" id="btnOpenAddModal">
+        <i class="bi bi-plus-lg me-1"></i> New Loan Application
+      </button>
+    </div>
+
+    <!-- Summary Statistics Bar -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3">
+        <div class="card card-metric bg-white p-3">
+          <div class="text-muted small">Total Loans</div>
+          <div class="h3 fw-bold my-1 text-primary" id="metricTotalCount">0</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card card-metric bg-white p-3">
+          <div class="text-muted small">SHZP Loans</div>
+          <div class="h3 fw-bold my-1 text-info" id="metricShzpCount">0</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card card-metric bg-white p-3">
+          <div class="text-muted small">EDB Loans</div>
+          <div class="h3 fw-bold my-1 text-dark" id="metricEdbCount">0</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card card-metric bg-white p-3">
+          <div class="text-muted small">Total Approved Amount</div>
+          <div class="h3 fw-bold my-1 text-success" id="metricTotalAmount">AED 0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Table Container -->
+    <div class="card card-metric p-4 bg-white mb-5">
+      
+      <!-- Table Custom Filters -->
+      <div class="row mb-3 g-2 align-items-center">
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">Filter by Loan Type:</label>
+          <select id="filterLoanType" class="form-select form-select-sm">
+            <option value="">All Loan Types</option>
+            <option value="SHZP Loan">SHZP Loan</option>
+            <option value="EDB Loan">EDB Loan</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">Filter by Status:</label>
+          <select id="filterStatus" class="form-select form-select-sm">
+            <option value="">All Statuses</option>
+            <option value="Approved">Approved</option>
+            <option value="Pending">Pending</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Main Loan Table -->
+      <div class="table-responsive">
+        <table id="loanTable" class="table table-hover align-middle w-100">
+          <thead class="table-light">
+            <tr>
+              <th>Loan ID</th>
+              <th>Applicant Name</th>
+              <th>Emirates ID</th>
+              <th>Loan Type</th>
+              <th>Amount (AED)</th>
+              <th>Tenure (Yrs)</th>
+              <th>Status</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Add / Edit Loan Modal -->
+  <div class="modal fade" id="loanModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="loanModalTitle">New Loan Application</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="loanForm">
+          <div class="modal-body">
+            <input type="hidden" id="loanId">
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Applicant Name</label>
+                <input type="text" class="form-control" id="applicantName" required placeholder="e.g. Ahmed Al-Mansoori">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Emirates ID</label>
+                <input type="text" class="form-control" id="emiratesId" required placeholder="784-1990-1234567-1">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Loan Type</label>
+                <select class="form-select" id="loanType" required>
+                  <option value="SHZP Loan">SHZP Loan (Housing)</option>
+                  <option value="EDB Loan">EDB Loan (Business / Personal)</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Requested Amount (AED)</label>
+                <input type="number" class="form-control" id="amount" required min="1000" step="1000" placeholder="500000">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Tenure (Years)</label>
+                <input type="number" class="form-control" id="tenure" required min="1" max="30" value="15">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Application Status</label>
+                <select class="form-select" id="status" required>
+                  <option value="Pending">Pending</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="btnSaveLoan">Save Loan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts: jQuery, Bootstrap, DataTables -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+  <script>
+    // Sample Initial Data Set
+    let sampleLoans = [
+      { id: "L-1001", name: "Mohammed Al-Hashimi", eid: "784-1988-1092837-1", type: "SHZP Loan", amount: 750000, tenure: 25, status: "Approved" },
+      { id: "L-1002", name: "Fatima Salem", eid: "784-1992-4839201-2", type: "EDB Loan", amount: 350000, tenure: 5, status: "Approved" },
+      { id: "L-1003", name: "Sultan Al-Zaabi", eid: "784-1985-9920192-3", type: "SHZP Loan", amount: 1200000, tenure: 20, status: "Pending" },
+      { id: "L-1004", name: "Rashid Saeed", eid: "784-1995-1029384-4", type: "EDB Loan", amount: 500000, tenure: 10, status: "Rejected" },
+      { id: "L-1005", name: "Mariam Al-Kaabi", eid: "784-1991-8839201-5", type: "SHZP Loan", amount: 800000, tenure: 25, status: "Approved" }
+    ];
+
+    let dataTableInstance = null;
+    const loanModal = new bootstrap.Modal(document.getElementById('loanModal'));
+
+    $(document).ready(function () {
+      
+      // Initialize DataTable
+      dataTableInstance = $('#loanTable').DataTable({
+        data: sampleLoans,
+        columns: [
+          { data: 'id', render: data => `<span class="fw-bold">${data}</span>` },
+          { data: 'name' },
+          { data: 'eid' },
+          { 
+            data: 'type',
+            render: function(data) {
+              const badgeClass = data === 'SHZP Loan' ? 'badge-shzp' : 'badge-edb';
+              return `<span class="badge ${badgeClass}">${data}</span>`;
+            }
+          },
+          { 
+            data: 'amount', 
+            render: data => `AED ${Number(data).toLocaleString()}` 
+          },
+          { data: 'tenure', render: data => `${data} Yrs` },
+          { 
+            data: 'status',
+            render: function(data) {
+              let color = 'bg-secondary';
+              if (data === 'Approved') color = 'bg-success';
+              if (data === 'Pending') color = 'bg-warning text-dark';
+              if (data === 'Rejected') color = 'bg-danger';
+              return `<span class="badge ${color}">${data}</span>`;
+            }
+          },
+          {
+            data: null,
+            orderable: false,
+            className: 'text-center',
+            render: function(data, type, row) {
+              return `
+                <button class="btn btn-sm btn-outline-primary action-btn btn-edit" data-id="${row.id}" title="Edit">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger action-btn btn-delete" data-id="${row.id}" title="Delete">
+                  <i class="bi bi-trash"></i>
+                </button>
+              `;
+            }
+          }
+        ],
+        order: [[0, 'desc']],
+        pageLength: 10
+      });
+
+      // Recalculate summary metrics on data updates
+      updateMetrics();
+
+      // Dropdown Filter Handlers
+      $('#filterLoanType').on('change', function () {
+        dataTableInstance.column(3).search(this.value).draw();
+      });
+
+      $('#filterStatus').on('change', function () {
+        dataTableInstance.column(6).search(this.value).draw();
+      });
+
+      // Open Add Modal
+      $('#btnOpenAddModal').on('click', function () {
+        $('#loanModalTitle').text('New Loan Application');
+        $('#loanForm')[0].reset();
+        $('#loanId').val('');
+        loanModal.show();
+      });
+
+      // Open Edit Modal
+      $('#loanTable').on('click', '.btn-edit', function () {
+        const id = $(this).data('id');
+        const rowData = dataTableInstance.rows().data().toArray().find(l => l.id === id);
+
+        if (rowData) {
+          $('#loanModalTitle').text(`Edit Loan (${rowData.id})`);
+          $('#loanId').val(rowData.id);
+          $('#applicantName').val(rowData.name);
+          $('#emiratesId').val(rowData.eid);
+          $('#loanType').val(rowData.type);
+          $('#amount').val(rowData.amount);
+          $('#tenure').val(rowData.tenure);
+          $('#status').val(rowData.status);
+          loanModal.show();
+        }
+      });
+
+      // Delete Record
+      $('#loanTable').on('click', '.btn-delete', function () {
+        const id = $(this).data('id');
+        if (confirm(`Are you sure you want to delete loan ${id}?`)) {
+          const row = dataTableInstance.row($(this).parents('tr'));
+          row.remove().draw(false);
+          updateMetrics();
+        }
+      });
+
+      // Handle Form Submission (Add or Update)
+      $('#loanForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const id = $('#loanId').val();
+        const loanPayload = {
+          id: id ? id : `L-${Math.floor(1000 + Math.random() * 9000)}`,
+          name: $('#applicantName').val(),
+          eid: $('#emiratesId').val(),
+          type: $('#loanType').val(),
+          amount: parseFloat($('#amount').val()),
+          tenure: parseInt($('#tenure').val()),
+          status: $('#status').val()
+        };
+
+        if (id) {
+          // Update existing row
+          const rowDataIndex = dataTableInstance.rows().data().toArray().findIndex(l => l.id === id);
+          dataTableInstance.row(rowDataIndex).data(loanPayload).draw(false);
+        } else {
+          // Add new row
+          dataTableInstance.row.add(loanPayload).draw(false);
+        }
+
+        updateMetrics();
+        loanModal.hide();
+      });
+
+    });
+
+    // Helper: Update Dashboard Cards
+    function updateMetrics() {
+      const allData = dataTableInstance.rows().data().toArray();
+      const totalCount = allData.length;
+      const shzpCount = allData.filter(d => d.type === 'SHZP Loan').length;
+      const edbCount = allData.filter(d => d.type === 'EDB Loan').length;
+      const totalApprovedAmount = allData
+        .filter(d => d.status === 'Approved')
+        .reduce((sum, d) => sum + Number(d.amount), 0);
+
+      $('#metricTotalCount').text(totalCount);
+      $('#metricShzpCount').text(shzpCount);
+      $('#metricEdbCount').text(edbCount);
+      $('#metricTotalAmount').text(`AED ${totalApprovedAmount.toLocaleString()}`);
+    }
+  </script>
+</body>
+</html>

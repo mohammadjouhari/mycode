@@ -1,0 +1,80 @@
+what is the advanteg of preparing command public static void PrepareCommand(SqlCommand cmd, SqlConnection conn, SqlTransaction trans, CommandType cmdType, string cmdText, SqlParameter[] cmdParms)
+
+{
+
+cmd.Parameters.Clear();
+
+if (conn.State != ConnectionState.Open)
+
+{
+
+conn.Open();
+
+}
+
+
+
+cmd.Connection = conn;
+
+cmd.CommandText = cmdText;
+
+cmd.CommandType = cmdType;
+
+cmd.Transaction = trans;
+
+if (cmdParms == null)
+
+{
+
+return;
+
+}
+
+
+
+foreach (SqlParameter sqlParameter in cmdParms)
+
+{
+
+if (sqlParameter != null)
+
+{
+
+cmd.Parameters.Add(sqlParameter);
+
+}
+
+}
+
+}
+
+The primary advantages of using this specific PrepareCommand helper fall into three main categories: Security & Correctness, Architectural Reusability, and Performance/State Safety.
+
+1. Enforces Parameterization (SQL Injection Defense)
+By accepting SqlParameter[] cmdParms and appending parameters individually, it enforces parameterized queries across your data layer.
+
+Prevents SQL Injection: Keeps user input strictly separated from executable T-SQL logic.
+
+Encourages Execution Plan Reuse: SQL Server parameterizes the query, allowing it to cache and reuse the generated query execution plan in sys.dm_exec_cached_plans across different parameter values, reducing CPU overhead on the database server.
+
+2. Guarantees ADO.NET Transaction Binding
+In raw ADO.NET, if a SqlConnection has an active local transaction running, executing a SqlCommand without explicitly setting cmd.Transaction = trans throws a runtime exception (InvalidOperationException).
+
+PrepareCommand makes binding the active SqlTransaction mandatory during command configuration, eliminating transactional state bugs across Unit of Work or Repository operations.
+
+3. Provides Defensive State Management
+Prevents Stale Parameters: cmd.Parameters.Clear() guarantees that if a SqlCommand instance is reused or passed across helper methods, leftover parameters from previous query executions do not contaminate the current execution or cause parameter name duplication errors.
+
+Safe Connection Handling: Checking if (conn.State != ConnectionState.Open) guarantees that execution never attempts to run on a closed connection, while simultaneously leaving already-open connections undisturbed (essential for open transactions).
+
+Null-Safe Guarding: Checks cmdParms == null and evaluates individual parameters for null before adding them to avoid NullReferenceException crashes during command assembly.
+
+4. Eliminates Boilerplate Code (DRY Principle)
+Configuring a SqlCommand requires 6 to 10 lines of repetitive setup code. By encapsulating this into a single static routine, your repository query methods stay clean and focused solely on execution and mapping:
+
+C#
+// Before: 10+ lines of repetitive setup in every repository method
+// After: Single clean setup call
+using var cmd = new SqlCommand();
+PrepareCommand(cmd, conn, trans, CommandType.Text, sql, parameters);
+using var reader = await cmd.ExecuteReaderAsync();

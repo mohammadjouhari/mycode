@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <title>Hello, world!</title>
+  </head>
+  <body>
+  <div class="modal " style="display:block" id="jsonModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header  text-white">
+        <h5 class="modal-title"><i class="bi bi-filetype-json me-2"></i>TREE_DATA JSON Structure</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body  text-light p-3">
+        <!-- Added max-height and overflow styles -->
+        <pre style="max-height: 60vh; overflow-y: auto;" class="m-0"><code id="jsonOutput" class="text-info">
+           [
+    {
+      id: 1,
+      name: 'Electronics',
+      children: [
+        {
+          id: 101,
+          name: 'Laptops',
+          children: [
+            { id: 1001, name: 'Gaming Laptops' },
+            { id: 1002, name: 'Ultrabooks' }
+          ]
+        },
+        { id: 102, name: 'Smartphones' }
+      ]
+    },
+    {
+      id: 2,
+      name: 'Clothing',
+      children: [
+        { id: 201, name: 'Men\'s Wear' },
+        { id: 202, name: 'Women\'s Wear' }
+      ]
+    }
+  ];
+
+
+
+
+
+          
+          </code></pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" onclick="copyJsonToClipboard()">
+          <i class="bi bi-clipboard"></i> Copy JSON
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

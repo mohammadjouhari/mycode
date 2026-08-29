@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aesthetic Today - Beauty & Skincare</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --at-primary: #1a1a1a;
+            --at-accent: #d4a373;
+            --at-bg-light: #f8f9fa;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .top-bar { background-color: #f5f5f5; font-size: 0.85rem; }
+        .navbar-brand { font-weight: 700; letter-spacing: 1.5px; }
+        .search-box input { border-radius: 20px 0 0 20px; }
+        .search-box button { border-radius: 0 20px 20px 0; }
+        .product-card { transition: transform 0.2s, box-shadow 0.2s; border: 1px solid #eee; }
+        .product-card:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .badge-discount { position: absolute; top: 10px; left: 10px; background-color: #dc3545; }
+        .badge-bestseller { position: absolute; top: 10px; right: 10px; background-color: var(--at-accent); }
+        
+        /* Left Panel Filter Styling */
+        .filter-sidebar {
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+        .filter-group .list-group-item {
+            border: none;
+            padding: 0.6rem 0.75rem;
+            border-radius: 6px !important;
+            color: #495057;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .filter-group .list-group-item:hover {
+            background-color: var(--at-bg-light);
+            color: var(--at-primary);
+        }
+        .filter-group .list-group-item.active {
+            background-color: var(--at-primary);
+            color: #ffffff;
+        }
+        .filter-group .list-group-item.active .badge {
+            background-color: #ffffff !important;
+            color: var(--at-primary) !important;
+        }
+
+        /* Custom Pagination Styling */
+        .pagination .page-link {
+            color: var(--at-primary);
+            border-color: #dee2e6;
+            cursor: pointer;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: var(--at-primary);
+            border-color: var(--at-primary);
+            color: #fff;
+        }
+        .pagination .page-link:hover {
+            color: var(--at-accent);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Top Announcement Bar -->
+    <div class="top-bar py-1 text-center text-secondary border-bottom">
+        <div class="container d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-truck me-1"></i> Free Express Shipping on orders above $50</span>
+            <div class="d-none d-md-block">
+                <a href="#" class="text-secondary text-decoration-none me-3">Track Order</a>
+                <a href="#" class="text-secondary text-decoration-none me-3">Help & FAQ</a>
+                <span class="dropdown">
+                    <a class="dropdown-toggle text-secondary text-decoration-none" href="#" data-bs-toggle="dropdown">USD $</a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#">USD $</a></li>
+                        <li><a class="dropdown-item" href="#">EUR €</a></li>
+                        <li><a class="dropdown-item" href="#">AED</a></li>
+                    </ul>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Main Navigation Header -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand text-uppercase me-4" href="#">AESTHETIC TODAY</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Search Bar -->
+            <div class="search-box flex-grow-1 mx-lg-4 my-2 my-lg-0 max-w-500">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search brands, products, skincare...">
+                    <button class="btn btn-dark" type="button"><i class="bi bi-search"></i></button>
+                </div>
+            </div>
+
+            <!-- User Actions -->
+            <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+                <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+                    <a href="#" class="text-dark text-decoration-none d-flex align-items-center">
+                        <i class="bi bi-person fs-4 me-1"></i>
+                        <span class="d-none d-xl-inline">Account</span>
+                    </a>
+                    <a href="#" class="text-dark text-decoration-none d-flex align-items-center position-relative">
+                        <i class="bi bi-heart fs-4 me-1"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;">0</span>
+                    </a>
+                    <a href="#" class="text-dark text-decoration-none d-flex align-items-center position-relative">
+                        <i class="bi bi-bag fs-4 me-1"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark" style="font-size:0.6rem;">3</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 3. Category Bar -->
+    <div class="bg-dark text-white d-none d-md-block">
+        <div class="container">
+            <ul class="nav nav-fill text-uppercase small">
+                <li class="nav-item"><a class="nav-link text-white py-2" href="#">Brands</a></li>
+                <li class="nav-item"><a class="nav-link text-white py-2" href="#">Skincare</a></li>
+                <li class="nav-item"><a class="nav-link text-white py-2" href="#">Haircare</a></li>
+                <li class="nav-item"><a class="nav-link text-white py-2" href="#">Makeup</a></li>
+                <li class="nav-item"><a class="nav-link text-white py-2" href="#">Fragrance</a></li>
+                <li class="nav-item"><a class="nav-link text-warning py-2 fw-bold" href="#">Offers & Sales</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 4. Hero Banner / Carousel -->
+    <div id="heroCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="p-5 text-center bg-light rounded-0" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); min-height: 280px;">
+                    <div class="container py-4">
+                        <span class="text-uppercase text-muted letter-spacing-2">Luxury Skincare Collection</span>
+                        <h1 class="display-5 fw-bold mt-2">Reveal Your Natural Glow</h1>
+                        <p class="lead mb-3">Discover dermatologist-approved formulas for radiant skin.</p>
+                        <a href="#" class="btn btn-dark rounded-0 px-4">Shop Best Sellers</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Featured Products Grid Section with Left Panel -->
+    <section class="py-4 container">
+        <div class="row g-4">
+            
+            <!-- LEFT PANEL: Category Sidebar -->
+            <aside class="col-lg-3">
+                <div class="filter-sidebar shadow-sm">
+                    <h5 class="fw-bold mb-3 d-flex align-items-center">
+                        <i class="bi bi-funnel me-2 fs-6"></i> Categories
+                    </h5>
+                    
+                    <!-- Isotope Filter List Group -->
+                    <div class="list-group filter-group" id="categoryFilterPanel">
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center active" data-filter="*">
+                            <span><i class="bi bi-grid-fill me-2"></i> All Products</span>
+                            <span class="badge bg-secondary rounded-pill">8</span>
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-filter=".skincare">
+                            <span><i class="bi bi-droplet-fill me-2"></i> Skincare</span>
+                            <span class="badge bg-secondary rounded-pill">3</span>
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-filter=".cleanser">
+                            <span><i class="bi bi-sparkles me-2"></i> Cleanser</span>
+                            <span class="badge bg-secondary rounded-pill">2</span>
+                        </button>
+                        <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-filter=".treatment">
+                            <span><i class="bi bi-prescription2 me-2"></i> Treatment</span>
+                            <span class="badge bg-secondary rounded-pill">3</span>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- RIGHT PANEL: Products Grid -->
+            <main class="col-lg-9">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold mb-0">Trending Products</h3>
+                </div>
+
+                <!-- Isotope Grid Container -->
+                <div class="row g-4" id="productGrid">
+                    
+                    <!-- Product Card 1 -->
+                    <div class="col-12 col-sm-6 col-md-4 grid-item skincare">
+                        <div class="card h-100 product-card rounded-3">
+                            <span class="badge badge-discount rounded-pill">-20%</span>
+                            <img src="https://static.vecteezy.com/system/resources/thumbnails/046/098/413/small/the-beautiful-mockup-showcases-good-cosmetic-packaging-for-cream-containers-emphasizing-future-cosmetic-innovations-photo.jpg" class="card-img-top p-3" alt="Hydrating Serum">
+                            <div class="card-body d-flex flex-column">
+                                <small class="text-muted text-uppercase">CeraVe</small>
+                                <h6 class="card-title fw-semibold mt-1">Hydrating Hyaluronic Acid Serum 30ml</h6>
+                                <div class="mt-auto">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span class="fw-bold text-dark">$19.99</span>
+                                        <span class="text-muted text-decoration-line-through small">$24.99</span>
+                                    </div>
+                                    <button class="btn btn-outline-dark btn-sm w-100 rounded-pill"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 2 -->
+                    <div class="col-12 col-sm-6 col-md-4 grid-item treatment">
+                        <div class="card h-100 product-card rounded-3">
+                            <span class="badge badge-bestseller rounded-pill">Best Seller</span>
+                            <img src="https://static.vecteezy.com/system/resources/thumbnails/046/098/413/small/the-beautiful-mockup-showcases-good-cosmetic-packaging-for-cream-containers-emphasizing-future-cosmetic-innovations-photo.jpg" class="card-img-top p-3" alt="Moisturizing Cream">
+                            <div class="card-body d-flex flex-column">
+                                <small class="text-muted text-uppercase">La Roche-Posay</small>
+                                <h6 class="card-title fw-semibold mt-1">Effaclar Duo Dual Action Acne Treatment</h6>
+                                <div class="mt-auto">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span class="fw-bold text-dark">$29.99</span>
+                                    </div>
+                                    <button class="btn btn-outline-dark btn-sm w-100 rounded-pill"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 3 -->
+                    <div class="col-12 col-sm-6 col-md-4 grid-item skincare">
+                        <div class="card h-100 product-card rounded-3">
+                            <img src="https://static.vecteezy.com/system/resources/thumbnails/046/098/413/small/the-beautiful-mockup-showcases-good-cosmetic-packaging-for-cream-containers-emphasizing-future-cosmetic-innovations-photo.jpg" class="card-img-top p-3" alt="Sunscreen SPF 50">
+                            <div class="card-body d-flex flex-column">
+                                <small class="text-muted text-uppercase">Vichy</small>
+                                <h6 class="card-title fw-semibold mt-1">Capital Soleil UV-Clear Anti-Imperfections SPF50+</h6>
+                                <div class="mt-auto">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span class="fw-bold text-dark">$22.50</span>
+                                    </div>
+                                    <button class="btn btn-outline-dark btn-sm w-100 rounded-pill"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 4 -->
+                    <div class="col-12 col-sm-6 col-md-4 grid-item cleanser">
+                        <div class="card h-100 product-card rounded-3">
+                            <span class="badge badge-discount rounded-pill">-15%</span>
+                            <img src="https://static.vecteezy.com/system/resources/thumbnails/046/098/413/small/the-beautiful-mockup-showcases-good-cosmetic-packaging-for-cream-containers-emphasizing-future-cosmetic-innovations-photo.jpg" class="card-img-top p-3" alt="Foaming Cleanser">
+                            <div class="card-body d-flex flex-column">
+                                <small class="text-muted text-uppercase">Bioderma</small>
+                                <h6 class="card-title fw-semibold mt-1">Sensibio H2O Micellar Water Makeup Remover</h6>
+                                <div class="mt-auto">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span class="fw-bold text-dark">$14.45</span>
+                                        <span class="text-muted text-decoration-line-through small">$17.00</span>
+                                    </div>
+                                    <button class="btn btn-outline-dark btn-sm w-100 rounded-pill"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 5 -->
+                    <div class="col-12 col-sm-6 col-md-4 grid-item treatment">
+                        <div class="card h-100 product-card rounded-3">
+                            <span class="badge badge-bestseller rounded-pill">Best Seller</span>
+                            <img src="https://static.vecteezy.com/system/resources/thumbnails/046/098/413/small/the-beautiful-mockup-showcases-good-cosmetic-packaging-for-cream-containers-emphasizing-future-cosmetic-innovations-photo.jpg" class="card-img-top p-3" alt="Retinol Night Serum">
+                            <div class="card-body d-flex flex-column">
+                                <small class="text-muted text-uppercase">The Ordinary</small>
+                                <h6 class="card-title fw-semibold mt-1">Retinol 0.5% in Squalane Intensive Night Treatment</h6>
+                                <div class="mt-auto">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span class="fw-bold text-dark">$11.80</span>
+                                    </div>
+                                    <button class="btn btn-outline-dark btn-sm w-100 rounded-pill"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 6 -->
+                    <div class="col-12 col-sm-6 col-md-4 grid-item cleanser">
+                        <div class="card h-100 product-card rounded-3">
+                            <img src="https://static.vecteezy.com/system/resources/thumbnails/046/098/413/small/the-beautiful-mockup-showcases-good-cosmetic-packaging-for-cream-containers-emphasizing-future-cosmetic-innovations-photo.jpg" class="card-img-top p-3" alt="Gentle Cleansing Gel">
+                            <div class="card-body d-flex flex-column">
+                                <small class="text-muted text-uppercase">Avene</small>
+                                <h6 class="card-title fw-semibold mt-1">Cleanance Soapless Gel Cleanser 200ml</h6>
+                                <div class="mt-auto">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span class="fw-bold text-dark">$18.50</span>
+                                    </div>
+                                    <button class="btn btn-outline-dark btn-sm w-100 rounded-pill"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 7 -->
+                    <div class="col-12 col-sm-6 col-md-4 grid-item skincare">
+                        <div class="card h-100 product-card rounded-3">
+                            <span class="badge badge-discount rounded-pill">-10%</span>
+                            <img src="https://static.vecteezy.com/system/resources/thumbnails/046/098/413/small/the-beautiful-mockup-showcases-good-cosmetic-packaging-for-cream-containers-emphasizing-future-cosmetic-innovations-photo.jpg" class="card-img-top p-3" alt="Vitamin C Serum">
+                            <div class="card-body d-flex flex-column">
+                                <small class="text-muted text-uppercase">Paula's Choice</small>
+                                <h6 class="card-title fw-semibold mt-1">C15 Super Booster Vitamin C Brightening Essence</h6>
+                                <div class="mt-auto">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span class="fw-bold text-dark">$46.80</span>
+                                        <span class="text-muted text-decoration-line-through small">$52.00</span>
+                                    </div>
+                                    <button class="btn btn-outline-dark btn-sm w-100 rounded-pill"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product Card 8 -->
+                    <div class="col-12 col-sm-6 col-md-4 grid-item treatment">
+                        <div class="card h-100 product-card rounded-3">
+                            <img src="https://static.vecteezy.com/system/resources/thumbnails/046/098/413/small/the-beautiful-mockup-showcases-good-cosmetic-packaging-for-cream-containers-emphasizing-future-cosmetic-innovations-photo.jpg" class="card-img-top p-3" alt="Niacinamide Serum">
+                            <div class="card-body d-flex flex-column">
+                                <small class="text-muted text-uppercase">Niacinamide Co</small>
+                                <h6 class="card-title fw-semibold mt-1">Niacinamide 10% + Zinc 1% Pore Refining Solution</h6>
+                                <div class="mt-auto">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span class="fw-bold text-dark">$13.50</span>
+                                    </div>
+                                    <button class="btn btn-outline-dark btn-sm w-100 rounded-pill"><i class="bi bi-cart-plus me-1"></i> Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Dynamic Pagination Section -->
+                <nav aria-label="Product navigation" class="mt-5">
+                    <ul class="pagination justify-content-center" id="paginationControls"></ul>
+                </nav>
+            </main>
+        </div>
+    </section>
+
+    <!-- 6. Footer -->
+    <footer class="bg-dark text-white pt-5 pb-3">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h5 class="text-uppercase fw-bold mb-3">Aesthetic Today</h5>
+                    <p class="small text-muted">Your ultimate destination for authentic beauty, skincare, fragrance, and wellness products.</p>
+                </div>
+                <div class="col-md-2">
+                    <h6 class="text-uppercase fw-bold mb-3">Shop</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" class="text-muted text-decoration-none">Skincare</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Haircare</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Makeup</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-uppercase fw-bold mb-3">Customer Service</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" class="text-muted text-decoration-none">Shipping & Delivery</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Returns Policy</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-uppercase fw-bold mb-3">Stay Connected</h6>
+                    <div class="d-flex gap-3 fs-5">
+                        <a href="#" class="text-white"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 border-secondary">
+            <div class="text-center small text-muted">
+                &copy; 2026 Aesthetic Today. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- Isotope JS CDN -->
+    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const itemsPerPage = 4;
+            let currentPage = 1;
+            let currentFilter = '*';
+
+            // Initialize Isotope
+            var $grid = $('#productGrid').isotope({
+                itemSelector: '.grid-item',
+                layoutMode: 'fitRows',
+                percentPosition: true
+            });
+
+            function getFilteredItems() {
+                if (currentFilter === '*') {
+                    return $('.grid-item');
+                }
+                return $('.grid-item' + currentFilter);
+            }
+
+            function applyPagination() {
+                var $filteredItems = getFilteredItems();
+                var totalItems = $filteredItems.length;
+                var totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+
+                if (currentPage > totalPages) currentPage = totalPages;
+                if (currentPage < 1) currentPage = 1;
+
+                var startIndex = (currentPage - 1) * itemsPerPage;
+                var endIndex = startIndex + itemsPerPage;
+
+                // Combine category filter with page slice range
+                $grid.isotope({
+                    filter: function () {
+                        var $this = $(this);
+                        var matchesFilter = (currentFilter === '*') || $this.is(currentFilter);
+                        if (!matchesFilter) return false;
+
+                        var index = $filteredItems.index(this);
+                        return index >= startIndex && index < endIndex;
+                    }
+                });
+                renderPaginationControls(totalPages);
+            }
+
+            function renderPaginationControls(totalPages) {
+                var $pagination = $('#paginationControls');
+                $pagination.empty();
+
+                if (totalPages <= 1) return;
+
+                // Previous Button
+                var prevClass = currentPage === 1 ? 'disabled' : '';
+                $pagination.append(`
+                    <li class="page-item ${prevClass}">
+                        <a class="page-link" data-page="${currentPage - 1}">Previous</a>
+                    </li>
+                `);
+
+                // Page Number Buttons
+                for (var i = 1; i <= totalPages; i++) {
+                    var activeClass = currentPage === i ? 'active' : '';
+                    $pagination.append(`
+                        <li class="page-item ${activeClass}">
+                            <a class="page-link" data-page="${i}">${i}</a>
+                        </li>
+                    `);
+                }
+
+                // Next Button
+                var nextClass = currentPage === totalPages ? 'disabled' : '';
+                $pagination.append(`
+                    <li class="page-item ${nextClass}">
+                        <a class="page-link" data-page="${currentPage + 1}">Next</a>
+                    </li>
+                `);
+            }
+
+            // Left Sidebar Category Event Handler
+            $('#categoryFilterPanel').on('click', '.list-group-item', function () {
+                currentFilter = $(this).attr('data-filter');
+                currentPage = 1;
+
+                $('#categoryFilterPanel .list-group-item').removeClass('active');
+                $(this).addClass('active');
+
+                applyPagination();
+            });
+
+            // Pagination Click Event Handler
+            $('#paginationControls').on('click', 'a.page-link', function (e) {
+                e.preventDefault();
+                var targetPage = parseInt($(this).attr('data-page'));
+                if (targetPage && targetPage !== currentPage) {
+                    currentPage = targetPage;
+                    applyPagination();
+                }
+            });
+
+            // Initial Execution
+            applyPagination();
+        });
+    </script>
+</body>
+</html>

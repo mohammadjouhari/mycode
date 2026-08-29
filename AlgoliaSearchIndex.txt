@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algolia Product Search with Dynamic Brand Counts</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Algolia Search Lite Client (v4) -->
+    <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.22.1/dist/algoliasearch-lite.umd.js"></script>
+</head>
+<body class="bg-light">
+
+    <div class="container py-5">
+        <h2 class="mb-4 fw-bold">Product Catalog</h2>
+
+        <div class="row g-4">
+            <!-- LEFT SIDEBAR: CHECKBOX FILTERS WITH COUNTS -->
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm p-3">
+                    <h5 class="fw-bold mb-3">Brands</h5>
+                    <div id="brandCheckboxPanel">
+                        <p class="text-muted small placeholder-text">Loading brands...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: SEARCH INPUT & RESULTS -->
+            <div class="col-md-9">
+                <div class="mb-3">
+                    <input type="text" id="searchInput" class="form-control form-control-lg shadow-sm" placeholder="Search products by name or tags...">
+                </div>
+
+                <div id="stats" class="text-muted mb-3 fs-6"></div>
+                <div id="resultsGrid" class="row g-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== HTML TEMPLATES ==================== -->
+    
+    <!-- Brand Checkbox Item Template -->
+    <template id="tpl-brand-item">
+        <div class="form-check d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <input class="form-check-input brand-checkbox" type="checkbox">
+                <label class="form-check-label ms-1"></label>
+            </div>
+            <span class="badge bg-light text-dark border ms-2 brand-count"></span>
+        </div>
+    </template>
+
+    <!-- Product Card Template -->
+    <template id="tpl-product-card">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <span class="badge bg-secondary mb-2 product-brand"></span>
+                    <h6 class="card-title fw-bold mb-1 product-name"></h6>
+                    <p class="card-text text-muted small mb-2 product-category"></p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="fs-6 fw-bold text-primary product-price"></span>
+                        <span class="badge product-stock-badge"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Empty/Error Message Template -->
+    <template id="tpl-alert-message">
+        <div class="col-12">
+            <div class="alert-content"></div>
+        </div>
+    </template>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        // 1. Algolia Configuration
+        const ALGOLIA_APP_ID = '9ASAOR7A2U';
+        const ALGOLIA_SEARCH_KEY = '6ade874b5c522137f6b84dcffe4d5f54'; 
+        const INDEX_NAME = 'A'; 
+
+        const searchClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY);
+        const index = searchClient.initIndex(INDEX_NAME);
+
+        const selectedBrandValues = new Set();
+
+        // 2. Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('searchInput').addEventListener('input', executeSearch);
+            executeSearch();
+        });
+
+        // 3. Main Search Function
+        async function executeSearch() {
+            const query = document.getElementById('searchInput').value;
+            const selectedBrandsArray = Array.from(selectedBrandValues).map(brand => `Brand:${brand}`);
+
+            const searchOptions = {
+                query: query,
+                hitsPerPage: 12,
+                facets: ['Brand']
+            };
+
+            if (selectedBrandsArray.length > 0) {
+                searchOptions.facetFilters = [selectedBrandsArray];
+            }
+
+            try {
+                const result = await index.search(query, searchOptions);
+                renderBrandPanel(result.facets ? result.facets.Brand : null);
+                renderResults(result);
+            } catch (error) {
+                console.error('Algolia Search Error:', error);
+                renderError(`Error querying Algolia: ${error.message}`);
+            }
+        }
+
+        // 4. Render Brand Checkbox Panel using <template>
+        function renderBrandPanel(brandFacets) {
+            const panel = document.getElementById('brandCheckboxPanel');
+            panel.replaceChildren(); // Clear container cleanly
+
+            if (!brandFacets || Object.keys(brandFacets).length === 0) {
+                const p = document.createElement('p');
+                p.className = 'text-muted small';
+                p.textContent = 'No brands available.';
+                panel.appendChild(p);
+                return;
+            }
+
+            const template = document.getElementById('tpl-brand-item');
+            const fragment = document.createDocumentFragment();
+
+            for (const [brandName, count] of Object.entries(brandFacets)) {
+                const clone = template.content.cloneNode(true);
+                const safeId = `brand_${brandName.replace(/[^a-zA-Z0-9]/g, '_')}`;
+
+                const checkbox = clone.querySelector('.brand-checkbox');
+                checkbox.value = brandName;
+                checkbox.id = safeId;
+                checkbox.checked = selectedBrandValues.has(brandName);
+                checkbox.addEventListener('change', (e) => toggleBrandFilter(e.target));
+
+                const label = clone.querySelector('.form-check-label');
+                label.htmlFor = safeId;
+                label.textContent = brandName;
+
+                const countBadge = clone.querySelector('.brand-count');
+                countBadge.textContent = count;
+
+                fragment.appendChild(clone);
+            }
+
+            panel.appendChild(fragment);
+        }
+
+        // 5. Toggle Brand Filter State
+        function toggleBrandFilter(checkbox) {
+            if (checkbox.checked) {
+                selectedBrandValues.add(checkbox.value);
+            } else {
+                selectedBrandValues.delete(checkbox.value);
+            }
+            executeSearch();
+        }
+
+        // 6. Render Results Grid using <template>
+        function renderResults(result) {
+            const statsContainer = document.getElementById('stats');
+            const grid = document.getElementById('resultsGrid');
+
+            statsContainer.textContent = `Found ${result.nbHits} result(s) in ${result.processingTimeMS} ms`;
+            grid.replaceChildren();
+
+            if (result.hits.length === 0) {
+                renderAlert('No products found matching your criteria.', 'text-muted');
+                return;
+            }
+
+            const template = document.getElementById('tpl-product-card');
+            const fragment = document.createDocumentFragment();
+
+            result.hits.forEach(item => {
+                const clone = template.content.cloneNode(true);
+
+                clone.querySelector('.product-brand').textContent = item.Brand || 'Generic';
+                clone.querySelector('.product-name').textContent = item.Name || 'Untitled';
+                clone.querySelector('.product-category').textContent = `Category: ${item.Category || 'N/A'}`;
+                clone.querySelector('.product-price').textContent = `$${item.Price ? item.Price.toFixed(2) : '0.00'}`;
+
+                const stockBadge = clone.querySelector('.product-stock-badge');
+                stockBadge.textContent = item.InStock ? 'In Stock' : 'Out of Stock';
+                stockBadge.classList.add(item.InStock ? 'bg-success' : 'bg-danger');
+
+                fragment.appendChild(clone);
+            });
+
+            grid.appendChild(fragment);
+        }
+
+        // 7. Helper Functions for UI Alerts
+        function renderAlert(message, textCssClass) {
+            const grid = document.getElementById('resultsGrid');
+            const template = document.getElementById('tpl-alert-message');
+            const clone = template.content.cloneNode(true);
+            
+            const content = clone.querySelector('.alert-content');
+            content.className = textCssClass;
+            content.textContent = message;
+
+            grid.appendChild(clone);
+        }
+
+        function renderError(errorMessage) {
+            const grid = document.getElementById('resultsGrid');
+            grid.replaceChildren();
+
+            const template = document.getElementById('tpl-alert-message');
+            const clone = template.content.cloneNode(true);
+            
+            const content = clone.querySelector('.alert-content');
+            content.className = 'alert alert-danger';
+            content.textContent = errorMessage;
+
+            grid.appendChild(clone);
+        }
+    </script>
+</body>
+</html>

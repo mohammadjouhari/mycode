@@ -1,0 +1,15 @@
+using System.Diagnostics;
+
+public void StartWindowsTask(string taskName)
+{
+    var processInfo = new ProcessStartInfo
+    {
+        FileName = "schtasks.exe",
+        Arguments = $"/run /tn \"{taskName}\"", // e.g., /run /tn "MyDatabaseBackupTask"
+        UseShellExecute = false,
+        CreateNoWindow = true
+    };
+
+    using var process = Process.Start(processInfo);
+    process?.WaitForExit();
+}
