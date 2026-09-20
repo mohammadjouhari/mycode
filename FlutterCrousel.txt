@@ -1,0 +1,172 @@
+import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  static const String _title = 'Flutter Stateful Clicker Counter';
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: _title,
+      theme: ThemeData(
+        // useMaterial3: false,
+        primarySwatch: Colors.blue,
+      ),
+      home: const ProductCarousel(),
+    );
+  }
+}
+
+class Product {
+  final String id;
+  final String name;
+  final String price;
+  final String imageUrl;
+
+  Product({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.imageUrl,
+  });
+}
+
+class ProductCarousel extends StatefulWidget {
+  const ProductCarousel({Key? key}) : super(key: key);
+
+  @override
+  State<ProductCarousel> createState() => _ProductCarouselState();
+}
+
+class _ProductCarouselState extends State<ProductCarousel> {
+  int _currentIndex = 0;
+
+  final List<Product> products = [
+    Product(
+      id: '1',
+      name: 'Wireless Headphones',
+      price: '\$199.99',
+      imageUrl:
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROOuCdSHyWNvvQMcoGAaRfd2CTq2Jhb3Omiig3y7aCeBFfYIXDoFAN_d4&s=10',
+    ),
+    Product(
+      id: '2',
+      name: 'Smart Watch',
+      price: '\$299.99',
+      imageUrl:
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROOuCdSHyWNvvQMcoGAaRfd2CTq2Jhb3Omiig3y7aCeBFfYIXDoFAN_d4&s=10',
+    ),
+    Product(
+      id: '3',
+      name: 'Bluetooth Speaker',
+      price: '\$89.99',
+      imageUrl:
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROOuCdSHyWNvvQMcoGAaRfd2CTq2Jhb3Omiig3y7aCeBFfYIXDoFAN_d4&s=10',
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        CarouselSlider(
+          options: CarouselOptions(
+            height: 280.0,
+            autoPlay: true,
+            enlargeCenterPage: true,
+            aspectRatio: 16 / 9,
+            viewportFraction: 0.8,
+            onPageChanged: (index, reason) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+          ),
+          items: products.map((product) {
+            return Builder(
+              builder: (BuildContext context) {
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.red.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Image.network(
+                            product.imageUrl,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product.name,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                product.price,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(context).primaryColor,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 12),
+        // Dots Indicator
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: products.asMap().entries.map((entry) {
+            return Container(
+              width: _currentIndex == entry.key ? 12.0 : 8.0,
+              height: 8.0,
+              margin: const EdgeInsets.symmetric(horizontal: 4.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _currentIndex == entry.key
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey.shade400,
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+}
