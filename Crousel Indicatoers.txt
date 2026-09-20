@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <title>Hello, world!</title>
+  </head>
+  <body>
+   <div class="carousel-controls">
+  <div class="control-box counter">
+    <span id="current-slide">03</span>
+    <span class="divider">|</span>
+    <span id="total-slides">03</span>
+  </div>
+
+  <div class="control-box pagination">
+    <span class="dot" data-index="0"></span>
+    <span class="dot" data-index="1"></span>
+    <span class="dot active" data-index="2"></span>
+  </div>
+
+  <div class="control-box arrows">
+    <button id="prev-btn" aria-label="Previous Slide">&lt;</button>
+    <button id="next-btn" aria-label="Next Slide">&gt;</button>
+  </div>
+</div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+
+body{
+   padding: 25px;
+}
+
+h1 {
+ padding-bottom: 15px;
+}
+
+.alert {
+ margin-top: 25px;
+}
+:root {
+  --bg-color: #dc1e35;
+  --text-active: #ffffff;
+  --text-inactive: rgba(255, 255, 255, 0.4);
+}
+
+body {
+  background-color: #f5f5f5;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+}
+
+/* Container Wrapper */
+.carousel-controls {
+  display: inline-flex;
+  background-color: var(--bg-color);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Section Boxes */
+.control-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  height: 24px;
+}
+
+.control-box:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Counter */
+.counter {
+  color: var(--text-inactive);
+  font-size: 14px;
+  font-weight: 500;
+  gap: 6px;
+}
+
+.counter #current-slide {
+  color: var(--text-inactive);
+}
+
+/* Bright active index styling */
+.counter #total-slides {
+  color: var(--text-active);
+  font-weight: bold;
+}
+
+/* Pagination Dots */
+.pagination {
+  gap: 10px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--text-inactive);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dot.active {
+  background-color: var(--text-active);
+}
+
+/* Navigation Buttons */
+.arrows {
+  padding: 0 10px;
+  gap: 8px;
+}
+
+.arrows button {
+  background: none;
+  border: none;
+  color: var(--text-active);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.arrows button:hover {
+  opacity: 1;
+}

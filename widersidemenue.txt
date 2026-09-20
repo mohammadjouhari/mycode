@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <title>Hello, world!</title>
+  </head>
+  <body>
+<div class="bg-dark text-white d-none d-md-block position-relative">
+    <div class="container">
+        <ul class="nav nav-fill text-uppercase small position-relative">
+            
+            <li class="nav-item"><a class="nav-link text-white py-2" href="#">Brands</a></li>
+            
+            <!-- Skincare Item with Wide Dropdown -->
+            <li class="nav-item mega-dropdown-parent">
+                <a class="nav-link text-white py-2 dropdown-toggle" href="#">Skincare</a>
+                
+                <!-- Mega Dropdown Menu -->
+                <div class="mega-dropdown-menu bg-dark text-white p-4 shadow-lg">
+                    <div class="container">
+                        <div class="row text-start text-capitalize">
+                            <div class="col-md-3">
+                                <h6 class="text-warning fw-bold mb-3">By Category</h6>
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Cleansers</a></li>
+                                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Moisturizers</a></li>
+                                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Serums & Treatments</a></li>
+                                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Sunscreen (SPF)</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-md-3">
+                                <h6 class="text-warning fw-bold mb-3">By Skin Concern</h6>
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Acne & Blemishes</a></li>
+                                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Anti-Aging & Wrinkles</a></li>
+                                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Dryness & Hydration</a></li>
+                                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Hyperpigmentation</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-md-3">
+                                <h6 class="text-warning fw-bold mb-3">Trending Ingredients</h6>
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Hyaluronic Acid</a></li>
+                                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Niacinamide</a></li>
+                                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Retinol & Vitamin A</a></li>
+                                    <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none hover-white">Vitamin C</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="bg-secondary p-3 rounded text-center">
+                                    <p class="fw-bold text-white mb-1">Skincare Routine</p>
+                                    <span class="small text-white-50 d-block mb-2">Build your custom 4-step daily regimen.</span>
+                                    <a href="#" class="btn btn-warning btn-sm fw-bold">Start Quiz</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item"><a class="nav-link text-white py-2" href="#">Haircare</a></li>
+            <li class="nav-item"><a class="nav-link text-white py-2" href="#">Makeup</a></li>
+            <li class="nav-item"><a class="nav-link text-white py-2" href="#">Fragrance</a></li>
+            <li class="nav-item"><a class="nav-link text-warning py-2 fw-bold" href="#">Offers & Sales</a></li>
+        </ul>
+    </div>
+</div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+
+.mega-dropdown-parent {
+    position: static !important;
+}
+
+.mega-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1050;
+    border-top: 2px solid #ffc107;
+}
+
+/* Hover trigger specifically for the parent item */
+.mega-dropdown-parent:hover .mega-dropdown-menu {
+    display: block;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.hover-white:hover {
+    color: #fff !important;
+    text-decoration: underline !important;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

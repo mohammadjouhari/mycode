@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive jsTree Builder</title>
+  
+  <!-- jsTree Theme CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
+  
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .toolbar { margin-bottom: 10px; }
+    button { padding: 6px 12px; margin-right: 5px; cursor: pointer; }
+    #tree-builder { border: 1px solid #ccc; padding: 10px; width: 350px; min-height: 250px; }
+    #json-output { margin-top: 20px; width: 100%; height: 150px; font-family: monospace; }
+  </style>
+</head>
+<body>
+
+  <h2>Tree Structure Builder (Drag & Drop)</h2>
+  
+  <!-- Control Buttons -->
+  <div class="toolbar">
+    <button id="btn-add">➕ Add Node</button>
+    <button id="btn-rename">✏️ Rename</button>
+    <button id="btn-delete">❌ Delete</button>
+    <button id="btn-export">💾 Export JSON</button>
+  </div>
+
+  <!-- Container for the Tree -->
+  <div id="tree-builder"></div>
+
+  <h3>Exported Data Structure</h3>
+  <textarea id="json-output" readonly placeholder="Click 'Export JSON' to see the current tree structure..."></textarea>
+
+  <!-- jQuery & jsTree Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      
+      // Initial starting tree
+      var initialData = [
+        {
+          "id": "node_root",
+          "text": "Root Folder",
+          "state": { "opened": true },
+          "children": [
+            { "id": "node_1", "text": "Documents", "children": [] },
+            { "id": "node_2", "text": "Images", "children": [] }
+          ]
+        }
+      ];
+
+      // Initialize jsTree
+      $('#tree-builder').jstree({
+        'core': {
+          'data': initialData,
+          'check_callback': true // REQUIRED: Allows drag-and-drop, creating, renaming, deleting
+        },
+        'plugins': ['dnd', 'wholerow', 'checkbox'] // 'dnd' enables Drag and Drop
+      });
+
+      var tree = $('#tree-builder').jstree(true);
+
+      // --- Toolbar Actions ---
+
+      // 1. Add Node
+      $('#btn-add').on('click', function () {
+        var selected = tree.get_selected();
+        var parentId = selected.length ? selected[0] : '#'; // Add to root if nothing is selected
+        
+        var newNodeId = tree.create_node(parentId, { "text": "New Item" }, "last", function (node) {
+          tree.open_node(parentId);
+          tree.edit(node); // Immediately open inline rename input
+        });
+      });
+
+      // 2. Rename Selected Node
+      $('#btn-rename').on('click', function () {
+        var selected = tree.get_selected();
+        if (!selected.length) return alert('Select a node to rename.');
+        tree.edit(selected[0]);
+      });
+
+      // 3. Delete Selected Node
+      $('#btn-delete').on('click', function () {
+        var selected = tree.get_selected();
+        if (!selected.length) return alert('Select a node to delete.');
+        tree.delete_node(selected);
+      });
+
+      // 4. Export Current Tree State to JSON
+      $('#btn-export').on('click', function () {
+        // get_json('#') exports full hierarchy data array
+        var currentTreeJson = tree.get_json('#', { flat: false }); 
+        $('#json-output').val(JSON.stringify(currentTreeJson, null, 2));
+      });
+
+      // --- Drag and Drop Event Listeners ---
+      
+      // Fires whenever a user drops a node in a new location
+      $(document).on('dnd_stop.vakata', function (e, data) {
+        console.log("Drag & drop completed!");
+      });
+
+    });
+  </script>
+
+</body>
+</html>
