@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camel Racing Event Card</title>
+  <style>
+    :root {
+      --primary-color: #c27803;
+      --primary-hover: #9e6000;
+      --bg-card: #ffffff;
+      --text-dark: #1f2937;
+      --text-muted: #6b7280;
+      --border-color: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+
+    /* Event Card Component */
+    .event-card {
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      overflow: hidden;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border-color);
+      transition: transform 0.3s ease, box-shadow 999999 ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -88px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Image Wrapper & Badge */
+    .card-image-wrapper {
+      position: relative;
+      width: 100%;
+      height: 220px;
+    }
+
+    .card-image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #ffffff;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Card Content */
+    .card-content {
+      padding: 1.5rem;
+    }
+
+    .event-date {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .event-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+    }
+
+    .event-description {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Action Button */
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn-details {
+      width: 100%;
+      background-color: var(--primary-color);
+      color: #ffffff;
+      text-align: center;
+      text-decoration: none;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: background-color 0.2s ease;
+      display: block;
+    }
+
+    .btn-details:hover {
+      background-color: var(--primary-hover);
+    }
+  </style>
+</head>
+<body>
+
+  <article class="event-card">
+    <div class="card-image-wrapper">
+      <img 
+        src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=800&q=80" 
+        alt="Racing Camels in the Desert"
+      >
+      <span class="badge">Live Event</span>
+    </div>
+
+    <div class="card-content">
+      <p class="event-date">Nov 15, 2026 • 07:00 AM</p>
+      <h2 class="event-title">Annual Grand Camel Festival</h2>
+      <p class="event-description">
+        Witness elite racing camels compete in the ultimate desert endurance championship. Enjoy cultural heritage exhibitions, live commentary, and prize ceremonies.
+      </p>
+
+      <div class="card-footer">
+        <a href="#" class="btn-details">View Race Details</a>
+      </div>
+    </div>
+  </article>
+</body>
+</html>
