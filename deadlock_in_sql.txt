@@ -1,0 +1,44 @@
+SELECT 
+    w.session_id AS [WaitingSessionID],
+    w.wait_duration_ms AS [WaitDurationMs],
+    w.wait_type AS [WaitType],
+    w.blocking_session_id AS [BlockingSessionID],
+    t.text AS [WaitingQueryText]
+FROM sys.dm_os_waiting_tasks w
+INNER JOIN sys.dm_exec_connections c ON w.session_id = c.session_id
+OUTER APPLY sys.dm_exec_sql_text(c.most_recent_sql_handle) t
+WHERE w.wait_type LIKE 'LCK_%';
+
+
+CREATE TABLE DeadlockTest (
+    ID INT PRIMARY KEY,
+    Value VARCHAR(50)
+);
+
+-- Insert two rows
+INSERT INTO DeadlockTest (ID, Value) VALUES (1, 'Row One');
+INSERT INTO DeadlockTest (ID, Value) VALUES (2, 'Row Two');
+
+
+
+
+EGIN TRANSACTION;
+UPDATE DeadlockTest SET Value = 'Window 1' WHERE ID = 1;
+WAITFOR DELAY '00:00:08'; -- 8 second window
+UPDATE DeadlockTest SET Value = 'Window 1' WHERE ID = 2;
+COMMIT TRANSACTION;
+
+
+BEGIN TRANSACTION;
+UPDATE DeadlockTest SET Value = 'Window 2' WHERE ID = 2;
+-- This update will block immediately because Window 1 holds ID = 1
+UPDATE DeadlockTest SET Value = 'Window 2' WHERE ID = 1; 
+COMMIT TRANSACTION;
+
+
+SELECT 
+    CAST(event_data AS XML) AS DeadlockGraph,
+    timestamp_utc AS DeadlockTimestamp
+FROM sys.fn_xe_file_target_read_file('system_health*.xel', NULL, NULL, NULL)
+WHERE object_name = 'xml_deadlock_report'
+ORDER BY timestamp_utc DESC;

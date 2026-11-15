@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyWings - Book Your Next Adventure</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-blue: #0d6efd;
+            --primary-dark: #0a4baf;
+            --accent-orange: #ff6b35;
+            --neutral-bg: #f8f9fa;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition-smooth: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--neutral-bg);
+            color: #2b2d42;
+        }
+
+        /* Glassmorphism & Card Effects */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 1rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Custom Hero & Carousel */
+        .hero-carousel-item {
+            height: 85vh;
+            min-height: 550px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.6) 0%, rgba(15, 23, 42, 0.4) 100%);
+        }
+
+        .hero-search-wrapper {
+            position: relative;
+            margin-top: -160px;
+            z-index: 10;
+        }
+
+        /* Seat Selector Grid */
+        .seat-map {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        .seat {
+            aspect-ratio: 1;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            background-color: #fff;
+        }
+
+        .seat:hover:not(.occupied) {
+            background-color: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+
+        .seat.selected {
+            background-color: #0d6efd !important;
+            color: white;
+            border-color: #0d6efd;
+        }
+
+        .seat.occupied {
+            background-color: #e2e8f0;
+            color: #94a3b8;
+            cursor: not-allowed;
+            border-color: #cbd5e1;
+        }
+
+        .seat-aisle {
+            grid-column: 3 / span 1;
+            margin-right: 12px;
+        }
+
+        /* Flight Timeline / Stops Indicator */
+        .flight-timeline {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .flight-line {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background-color: #cbd5e1;
+            z-index: 1;
+        }
+
+        .flight-plane-icon {
+            position: relative;
+            z-index: 2;
+            background: white;
+            padding: 0 8px;
+            color: var(--primary-blue);
+        }
+
+        .flight-card {
+            transition: var(--transition-smooth);
+            border: 1px solid #e2e8f0;
+        }
+
+        .flight-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            border-color: #bfdbfe;
+        }
+
+        .deal-card {
+            overflow: hidden;
+            border-radius: 1rem;
+            transition: var(--transition-smooth);
+        }
+
+        .deal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .deal-card img {
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .deal-card:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Nav Tab Pill Styling */
+        .nav-pills-custom .nav-link {
+            color: #475569;
+            font-weight: 600;
+            border-radius: 50rem;
+            padding: 0.5rem 1.25rem;
+        }
+
+        .nav-pills-custom .nav-link.active {
+            background-color: var(--primary-blue);
+            color: #fff;
+        }
+
+        /* Custom Scrollbar for Filters */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top py-3 shadow-sm" style="background-color: #0f172a !important;">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center fw-bold fs-4" href="#">
+                <i class="fa-solid fa-plane-departure text-primary me-2 fs-3"></i>
+                <span class="text-white">Sky</span><span class="text-primary">Wings</span>
+            </a>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item"><a class="nav-link active" href="#">Explore</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#flights-section">Flights</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#deals-section">Hot Deals</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about-section">Manage Booking</a></li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Currency Selector -->
+                    <select class="form-select form-select-sm bg-dark text-light border-secondary" style="width: auto;" id="currencySelect">
+                        <option value="USD" selected>$ USD</option>
+                        <option value="EUR">€ EUR</option>
+                        <option value="GBP">£ GBP</option>
+                        <option value="JPY">¥ JPY</option>
+                    </select>
+
+                    <!-- Sign In / Register -->
+                    <button class="btn btn-outline-light rounded-pill px-4 btn-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#authModal">
+                        <i class="fa-regular fa-user me-1"></i> Sign In
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO CAROUSEL -->
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="carousel-item active hero-carousel-item" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80');">
+                <div class="hero-overlay d-flex align-items-center">
+                    <div class="container text-white pb-5 mb-5">
+                        <span class="badge bg-primary px-3 py-2 rounded-pill text-uppercase mb-2">Tropical Escape</span>
+                        <h1 class="display-3 fw-bold">Explore Paradise in Maldives</h1>
+                        <p class="lead col-md-8 col-lg-6">Book non-stop flights with up to 25% discount this holiday season.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="carousel-item hero-carousel-item" style="background-image: url('https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1600&q=80');">
+                <div class="hero-overlay d-flex align-items-center">
+                    <div class="container text-white pb-5 mb-5">
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill text-uppercase mb-2">Cultural Journey</span>
+                        <h1 class="display-3 fw-bold">Discover Romance in Paris</h1>
+                        <p class="lead col-md-8 col-lg-6">Experience world-class cuisine and timeless historic architecture.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="carousel-item hero-carousel-item" style="background-image: url('https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1600&q=80');">
+                <div class="hero-overlay d-flex align-items-center">
+                    <div class="container text-white pb-5 mb-5">
+                        <span class="badge bg-info text-dark px-3 py-2 rounded-pill text-uppercase mb-2">Urban Adventure</span>
+                        <h1 class="display-3 fw-bold">Uncover Neon Lights in Tokyo</h1>
+                        <p class="lead col-md-8 col-lg-6">Fly direct with premium cabin service and comfortable seating options.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+
+    <!-- SEARCH FORM OVERLAY -->
+    <div class="container hero-search-wrapper">
+        <div class="glass-card p-4 p-md-5">
+            <!-- Flight Type Radio Toggle -->
+            <div class="d-flex flex-wrap align-items-center gap-4 mb-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tripType" id="roundTrip" value="roundTrip" checked onchange="toggleReturnDate()">
+                    <label class="form-check-label fw-bold" for="roundTrip">Round Trip</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="tripType" id="oneWay" value="oneWay" onchange="toggleReturnDate()">
+                    <label class="form-check-label fw-bold" for="oneWay">One Way</label>
+                </div>
+            </div>
+
+            <!-- Search Inputs Form -->
+            <form id="heroSearchForm" class="row g-3 align-items-end" onsubmit="handleSearch(event)">
+                <!-- Origin -->
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label text-muted small fw-bold">From</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-plane-departure text-primary"></i></span>
+                        <select class="form-select border-start-0 ps-0 fw-semibold" id="originSelect" required>
+                            <option value="JFK">New York (JFK)</option>
+                            <option value="LHR">London (LHR)</option>
+                            <option value="CDG">Paris (CDG)</option>
+                            <option value="HND">Tokyo (HND)</option>
+                            <option value="DXB">Dubai (DXB)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Destination -->
+                <div class="col-md-6 col-lg-3">
+                    <label class="form-label text-muted small fw-bold">To</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-plane-arrival text-primary"></i></span>
+                        <select class="form-select border-start-0 ps-0 fw-semibold" id="destinationSelect" required>
+                            <option value="LHR" selected>London (LHR)</option>
+                            <option value="JFK">New York (JFK)</option>
+                            <option value="CDG">Paris (CDG)</option>
+                            <option value="HND">Tokyo (HND)</option>
+                            <option value="DXB">Dubai (DXB)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Departure Date -->
+                <div class="col-md-6 col-lg-2">
+                    <label class="form-label text-muted small fw-bold">Departure</label>
+                    <input type="date" class="form-control fw-semibold" id="departDate" required>
+                </div>
+
+                <!-- Return Date -->
+                <div class="col-md-6 col-lg-2" id="returnDateContainer">
+                    <label class="form-label text-muted small fw-bold">Return</label>
+                    <input type="date" class="form-control fw-semibold" id="returnDate">
+                </div>
+
+                <!-- Passengers & Cabin Class -->
+                <div class="col-md-6 col-lg-2">
+                    <label class="form-label text-muted small fw-bold">Passengers & Class</label>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary w-100 text-start d-flex align-items-center justify-content-between bg-white text-dark" type="button" id="passengerDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                            <span class="text-truncate" id="passengerSummary">1 Passenger, Economy</span>
+                            <i class="fa-solid fa-chevron-down small text-muted"></i>
+                        </button>
+                        <div class="dropdown-menu p-3 dropdown-menu-end shadow" style="width: 280px;">
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Passengers</label>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="small">Adults (12+ yrs)</span>
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="updatePassengers(-1)">-</button>
+                                        <span class="btn btn-light disabled px-3 text-dark fw-bold" id="passengerCount">1</span>
+                                        <button type="button" class="btn btn-outline-secondary" onclick="updatePassengers(1)">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div>
+                                <label class="form-label small fw-bold">Cabin Class</label>
+                                <select class="form-select form-select-sm" id="cabinClassSelect" onchange="updateCabinClass()">
+                                    <option value="Economy" selected>Economy</option>
+                                    <option value="Premium Economy">Premium Economy</option>
+                                    <option value="Business">Business Class</option>
+                                    <option value="First">First Class</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-12 text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold text-uppercase shadow-sm">
+                        <i class="fa-solid fa-magnifying-glass me-2"></i> Search Flights
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN SEARCH RESULTS & FILTERS SECTION -->
+    <section class="container py-5 mt-4" id="flights-section">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-1">Available Flights</h3>
+                <p class="text-muted small mb-0" id="resultsSubtitle">Showing options based on your destination search</p>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small fw-semibold">Sort by:</span>
+                <select class="form-select form-select-sm bg-white border" id="sortSelect" onchange="applyFiltersAndSort()">
+                    <option value="price-asc">Price (Lowest first)</option>
+                    <option value="price-desc">Price (Highest first)</option>
+                    <option value="duration-asc">Duration (Fastest)</option>
+                    <option value="depart-asc">Departure Time</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Sidebar Filters -->
+            <div class="col-lg-3">
+                <div class="card border-0 shadow-sm rounded-4 p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0"><i class="fa-solid fa-sliders me-2 text-primary"></i> Filter Results</h6>
+                        <button class="btn btn-link btn-sm text-decoration-none p-0" onclick="resetFilters()">Reset All</button>
+                    </div>
+
+                    <!-- Stops Filter -->
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-uppercase text-muted">Stops</label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input filter-stop" type="checkbox" value="0" id="stopDirect" checked onchange="applyFiltersAndSort()">
+                            <label class="form-check-label small" for="stopDirect">Non-stop</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input filter-stop" type="checkbox" value="1" id="stop1" checked onchange="applyFiltersAndSort()">
+                            <label class="form-check-label small" for="stop1">1 Stop</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input filter-stop" type="checkbox" value="2" id="stop2" checked onchange="applyFiltersAndSort()">
+                            <label class="form-check-label small" for="stop2">2+ Stops</label>
+                        </div>
+                    </div>
+
+                    <!-- Price Range Filter -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label small fw-bold text-uppercase text-muted mb-0">Max Price</label>
+                            <span class="fw-bold text-primary small" id="priceRangeValue">$1200</span>
+                        </div>
+                        <input type="range" class="form-range" id="priceRange" min="200" max="2000" step="50" value="1200" oninput="updatePriceDisplay(this.value)" onchange="applyFiltersAndSort()">
+                    </div>
+
+                    <!-- Airlines Filter -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-uppercase text-muted">Airlines</label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input filter-airline" type="checkbox" value="SkyWings Express" id="airSkyWings" checked onchange="applyFiltersAndSort()">
+                            <label class="form-check-label small" for="airSkyWings">SkyWings Express</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input filter-airline" type="checkbox" value="Oceanic Airways" id="airOceanic" checked onchange="applyFiltersAndSort()">
+                            <label class="form-check-label small" for="airOceanic">Oceanic Airways</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input filter-airline" type="checkbox" value="AeroGlobal" id="airAero" checked onchange="applyFiltersAndSort()">
+                            <label class="form-check-label small" for="airAero">AeroGlobal</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flight Cards List Container -->
+            <div class="col-lg-9">
+                <div id="flightResultsList" class="d-flex flex-column gap-3">
+                    <!-- Dynamic Flight Cards Render Here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED DEALS SECTION -->
+    <section class="bg-white py-5 my-5 border-top border-bottom" id="deals-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge bg-danger px-3 py-2 rounded-pill text-uppercase mb-2">Limited Time Offers</span>
+                <h2 class="fw-bold">Trending Flight Destinations</h2>
+                <p class="text-muted">Hand-picked top vacation spots at discount rates</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Deal 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm deal-card">
+                        <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Dubai">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="fw-bold mb-0">Dubai, UAE</h5>
+                                <span class="badge bg-success">Save 30%</span>
+                            </div>
+                            <p class="text-muted small mb-3">Roundtrip from New York • Non-stop</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="text-muted text-decoration-line-through small me-1">$890</span>
+                                    <span class="fs-4 fw-bold text-primary">$620</span>
+                                </div>
+                                <button class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="selectQuickDeal('JFK', 'DXB')">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deal 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm deal-card">
+                        <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="London">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="fw-bold mb-0">London, UK</h5>
+                                <span class="badge bg-success">Hot Deal</span>
+                            </div>
+                            <p class="text-muted small mb-3">Roundtrip from JFK • Includes luggage</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="text-muted text-decoration-line-through small me-1">$650</span>
+                                    <span class="fs-4 fw-bold text-primary">$480</span>
+                                </div>
+                                <button class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="selectQuickDeal('JFK', 'LHR')">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deal 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm deal-card">
+                        <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Tokyo">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="fw-bold mb-0">Tokyo, Japan</h5>
+                                <span class="badge bg-warning text-dark">Popular</span>
+                            </div>
+                            <p class="text-muted small mb-3">Roundtrip from London • Premium Airline</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="text-muted text-decoration-line-through small me-1">$1,100</span>
+                                    <span class="fs-4 fw-bold text-primary">$840</span>
+                                </div>
+                                <button class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="selectQuickDeal('LHR', 'HND')">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FLIGHT BOOKING MODAL -->
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-primary text-white border-0 py-3">
+                    <h5 class="modal-title fw-bold" id="bookingModalLabel">
+                        <i class="fa-solid fa-plane text-white me-2"></i> Flight Reservation
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Selected Flight Summary Banner -->
+                    <div class="bg-light p-3 rounded-3 mb-4 d-flex justify-content-between align-items-center" id="modalFlightSummary">
+                        <!-- Populated dynamic flight info -->
+                    </div>
+
+                    <!-- Booking Wizard Tabs Header -->
+                    <ul class="nav nav-pills nav-pills-custom justify-content-center mb-4 gap-2" id="bookingTabs">
+                        <li class="nav-item">
+                            <button class="nav-link active" id="pills-passenger-tab" data-bs-toggle="pill" data-bs-target="#pills-passenger">1. Passengers</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="pills-seats-tab" data-bs-toggle="pill" data-bs-target="#pills-seats">2. Seat Selection</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="pills-payment-tab" data-bs-toggle="pill" data-bs-target="#pills-payment">3. Payment</button>
+                        </li>
+                    </ul>
+
+                    <!-- Wizard Steps Content -->
+                    <div class="tab-content" id="bookingTabsContent">
+                        <!-- STEP 1: PASSENGER DETAILS -->
+                        <div class="tab-pane fade show active" id="pills-passenger">
+                            <form id="passengerDetailsForm">
+                                <h6 class="fw-bold mb-3">Primary Passenger Details</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <label class="form-label small">Title</label>
+                                        <select class="form-select form-select-sm" required>
+                                            <option>Mr</option>
+                                            <option>Mrs</option>
+                                            <option>Ms</option>
+                                            <option>Dr</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small">First Name</label>
+                                        <input type="text" class="form-control form-control-sm" placeholder="John" required>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label small">Last Name</label>
+                                        <input type="text" class="form-control form-control-sm" placeholder="Doe" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small">Email Address</label>
+                                        <input type="email" class="form-control form-control-sm" placeholder="john.doe@example.com" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small">Phone Number</label>
+                                        <input type="tel" class="form-control form-control-sm" placeholder="+1 (555) 000-0000" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small">Passport Number</label>
+                                        <input type="text" class="form-control form-control-sm" placeholder="A12345678" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small">Nationality</label>
+                                        <input type="text" class="form-control form-control-sm" placeholder="United States" required>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button type="button" class="btn btn-primary rounded-pill px-4" onclick="goToTab('pills-seats-tab')">Continue to Seats <i class="fa-solid fa-arrow-right ms-1"></i></button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- STEP 2: SEAT SELECTION -->
+                        <div class="tab-pane fade" id="pills-seats">
+                            <div class="text-center mb-3">
+                                <h6 class="fw-bold mb-1">Select Your Preferred Seat</h6>
+                                <p class="text-muted small">Choose 1 seat for your flight</p>
+                                <div class="d-flex justify-content-center gap-3 small my-2">
+                                    <span class="d-flex align-items-center gap-1"><span class="d-inline-block bg-white border rounded" style="width:14px; height:14px;"></span> Available</span>
+                                    <span class="d-flex align-items-center gap-1"><span class="d-inline-block bg-primary rounded" style="width:14px; height:14px;"></span> Selected</span>
+                                    <span class="d-flex align-items-center gap-1"><span class="d-inline-block bg-secondary rounded opacity-50" style="width:14px; height:14px;"></span> Occupied</span>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Seat Grid -->
+                            <div class="seat-map py-3" id="seatMapGrid">
+                                <!-- Generated by JS -->
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" onclick="goToTab('pills-passenger-tab')">Back</button>
+                                <button type="button" class="btn btn-primary rounded-pill px-4" onclick="goToTab('pills-payment-tab')">Continue to Payment <i class="fa-solid fa-arrow-right ms-1"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: PAYMENT & CONFIRMATION -->
+                        <div class="tab-pane fade" id="pills-payment">
+                            <div class="row g-4">
+                                <!-- Payment Details -->
+                                <div class="col-md-7">
+                                    <h6 class="fw-bold mb-3">Payment Method</h6>
+                                    <div class="form-check border p-3 rounded mb-2">
+                                        <input class="form-check-input" type="radio" name="paymentType" id="creditCard" checked>
+                                        <label class="form-check-label fw-bold small ms-2" for="creditCard">
+                                            <i class="fa-regular fa-credit-card me-1 text-primary"></i> Credit / Debit Card
+                                        </label>
+                                    </div>
+                                    <div class="row g-2 mt-2">
+                                        <div class="col-12">
+                                            <label class="form-label small">Card Number</label>
+                                            <input type="text" class="form-control form-control-sm" placeholder="4532 •••• •••• 8892" value="4532 8921 4432 8892">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small">Expiration Date</label>
+                                            <input type="text" class="form-control form-control-sm" placeholder="MM/YY" value="08/28">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small">CVV</label>
+                                            <input type="password" class="form-control form-control-sm" placeholder="123" value="882">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Price Breakdown Summary -->
+                                <div class="col-md-5">
+                                    <div class="bg-light p-3 rounded-3 border">
+                                        <h6 class="fw-bold mb-3">Fare Summary</h6>
+                                        <div class="d-flex justify-content-between small mb-2">
+                                            <span class="text-muted">Base Fare (1 Adult)</span>
+                                            <span class="fw-bold" id="summaryBasePrice">$0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between small mb-2">
+                                            <span class="text-muted">Seat Selection</span>
+                                            <span class="fw-bold" id="summarySeatPrice">$15</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between small mb-2">
+                                            <span class="text-muted">Taxes & Fees</span>
+                                            <span class="fw-bold" id="summaryTaxPrice">$45</span>
+                                        </div>
+                                        <hr>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="fw-bold">Total Amount</span>
+                                            <span class="fs-4 fw-bold text-primary" id="summaryTotalPrice">$0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" onclick="goToTab('pills-seats-tab')">Back</button>
+                                <button type="button" class="btn btn-success rounded-pill px-5 fw-bold" onclick="completeBooking()">
+                                    <i class="fa-solid fa-lock me-1"></i> Pay & Confirm
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confirmation Success Container -->
+                    <div id="bookingSuccessMessage" class="d-none text-center py-5">
+                        <div class="text-success display-1 mb-3"><i class="fa-solid fa-circle-check"></i></div>
+                        <h3 class="fw-bold">Booking Confirmed!</h3>
+                        <p class="text-muted col-md-8 mx-auto">Your flight booking reference is <strong class="text-dark" id="bookingRef">#SKY892A</strong>. We have sent your e-ticket itinerary details to your email address.</p>
+                        <div class="mt-4">
+                            <button type="button" class="btn btn-primary rounded-pill px-4" data-bs-dismiss="modal">Close & Return</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUTHENTICATION MODAL -->
+    <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Sign In</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form onsubmit="event.preventDefault(); alert('Logged in successfully!'); bootstrap.Modal.getInstance(document.getElementById('authModal')).hide();">
+                        <div class="mb-3">
+                            <label class="form-label small">Email address</label>
+                            <input type="email" class="form-control" placeholder="name@example.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small">Password</label>
+                            <input type="password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold">Sign In</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-dark text-light pt-5 pb-4 mt-5" style="background-color: #0f172a !important;" id="about-section">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <!-- Company Info -->
+                <div class="col-lg-4">
+                    <a class="navbar-brand d-flex align-items-center fw-bold fs-4 mb-3" href="#">
+                        <i class="fa-solid fa-plane-departure text-primary me-2 fs-3"></i>
+                        <span class="text-white">Sky</span><span class="text-primary">Wings</span>
+                    </a>
+                    <p class="text-muted small">Your trusted global travel partner. Discover affordable flights, luxury stays, and seamless destination bookings with zero hidden charges.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm rounded-circle"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-6 col-lg-2">
+                    <h6 class="fw-bold mb-3 text-white">Company</h6>
+                    <ul class="list-unstyled text-muted small d-flex flex-column gap-2">
+                        <li><a href="#" class="text-decoration-none text-muted">About Us</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">Careers</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">Press & Media</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">Travel Blog</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support Links -->
+                <div class="col-6 col-lg-2">
+                    <h6 class="fw-bold mb-3 text-white">Support</h6>
+                    <ul class="list-unstyled text-muted small d-flex flex-column gap-2">
+                        <li><a href="#" class="text-decoration-none text-muted">Help Center</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">Baggage Info</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">Refund Policy</a></li>
+                        <li><a href="#" class="text-decoration-none text-muted">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter Subscription -->
+                <div class="col-lg-4">
+                    <h6 class="fw-bold mb-3 text-white">Subscribe for Fare Alerts</h6>
+                    <p class="text-muted small">Get exclusive flight promotions and travel news directly in your inbox.</p>
+                    <form onsubmit="event.preventDefault(); alert('Thank you for subscribing!');" class="input-group">
+                        <input type="email" class="form-control form-control-sm border-secondary bg-dark text-light" placeholder="Your email address" required>
+                        <button class="btn btn-primary btn-sm px-3 fw-bold" type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+            <hr class="border-secondary opacity-50">
+
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center text-muted small pt-2">
+                <p class="mb-2 mb-sm-0">&copy; 2026 SkyWings Airlines Inc. All rights reserved.</p>
+                <div class="d-flex gap-3">
+                    <a href="#" class="text-decoration-none text-muted">Privacy Policy</a>
+                    <a href="#" class="text-decoration-none text-muted">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom Flight Data & Application Logic -->
+    <script>
+        // Sample Realistic Flight Data
+        const sampleFlights = [
+            {
+                id: 'SK-101',
+                airline: 'SkyWings Express',
+                logo: 'fa-solid fa-plane text-primary',
+                origin: 'JFK',
+                originCity: 'New York',
+                destination: 'LHR',
+                destCity: 'London',
+                departTime: '08:30 AM',
+                arrivalTime: '08:45 PM',
+                duration: '7h 15m',
+                stops: 0,
+                price: 450,
+                cabinClass: 'Economy'
+            },
+            {
+                id: 'OA-304',
+                airline: 'Oceanic Airways',
+                logo: 'fa-solid fa-paper-plane text-info',
+                origin: 'JFK',
+                originCity: 'New York',
+                destination: 'LHR',
+                destCity: 'London',
+                departTime: '11:15 AM',
+                arrivalTime: '11:50 PM',
+                duration: '7h 35m',
+                stops: 0,
+                price: 520,
+                cabinClass: 'Economy'
+            },
+            {
+                id: 'AG-902',
+                airline: 'AeroGlobal',
+                logo: 'fa-solid fa-jet-fighter-up text-warning',
+                origin: 'JFK',
+                originCity: 'New York',
+                destination: 'LHR',
+                destCity: 'London',
+                departTime: '02:00 PM',
+                arrivalTime: '03:10 AM',
+                duration: '8h 10m',
+                stops: 1,
+                price: 380,
+                cabinClass: 'Economy'
+            },
+            {
+                id: 'SK-505',
+                airline: 'SkyWings Express',
+                logo: 'fa-solid fa-plane text-primary',
+                origin: 'CDG',
+                originCity: 'Paris',
+                destination: 'DXB',
+                destCity: 'Dubai',
+                departTime: '06:00 AM',
+                arrivalTime: '03:30 PM',
+                duration: '6h 30m',
+                stops: 0,
+                price: 610,
+                cabinClass: 'Economy'
+            },
+            {
+                id: 'OA-881',
+                airline: 'Oceanic Airways',
+                logo: 'fa-solid fa-paper-plane text-info',
+                origin: 'LHR',
+                originCity: 'London',
+                destination: 'HND',
+                destCity: 'Tokyo',
+                departTime: '09:00 PM',
+                arrivalTime: '06:00 PM',
+                duration: '14h 00m',
+                stops: 1,
+                price: 840,
+                cabinClass: 'Economy'
+            },
+            {
+                id: 'AG-114',
+                airline: 'AeroGlobal',
+                logo: 'fa-solid fa-jet-fighter-up text-warning',
+                origin: 'JFK',
+                originCity: 'New York',
+                destination: 'DXB',
+                destCity: 'Dubai',
+                departTime: '10:30 PM',
+                arrivalTime: '07:15 PM',
+                duration: '12h 45m',
+                stops: 0,
+                price: 920,
+                cabinClass: 'Economy'
+            }
+        ];
+
+        // State Management
+        let currentFilteredFlights = [...sampleFlights];
+        let selectedFlight = null;
+        let passengerCount = 1;
+        let currentCabinClass = 'Economy';
+        let selectedSeat = null;
+
+        // Initialize App on DOM Load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set default date picker values (Tomorrow)
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('departDate').value = tomorrow.toISOString().split('T')[0];
+
+            const returnDay = new Date();
+            returnDay.setDate(returnDay.getDate() + 8);
+            document.getElementById('returnDate').value = returnDay.toISOString().split('T')[0];
+
+            renderFlightResults(currentFilteredFlights);
+            generateSeatMap();
+        });
+
+        // Toggle Return Date input based on Radio choice
+        function toggleReturnDate() {
+            const isRoundTrip = document.getElementById('roundTrip').checked;
+            const returnContainer = document.getElementById('returnDateContainer');
+            returnContainer.style.display = isRoundTrip ? 'block' : 'none';
+        }
+
+        // Passenger Counter Controller
+        function updatePassengers(change) {
+            passengerCount = Math.max(1, Math.min(9, passengerCount + change));
+            document.getElementById('passengerCount').innerText = passengerCount;
+            updatePassengerSummaryText();
+        }
+
+        function updateCabinClass() {
+            currentCabinClass = document.getElementById('cabinClassSelect').value;
+            updatePassengerSummaryText();
+        }
+
+        function updatePassengerSummaryText() {
+            document.getElementById('passengerSummary').innerText = `${passengerCount} Passenger${passengerCount > 1 ? 's' : ''}, ${currentCabinClass}`;
+        }
+
+        // Filter Controls
+        function updatePriceDisplay(val) {
+            document.getElementById('priceRangeValue').innerText = `$${val}`;
+        }
+
+        function applyFiltersAndSort() {
+            const maxPrice = parseFloat(document.getElementById('priceRange').value);
+            
+            // Checked stops
+            const checkedStops = Array.from(document.querySelectorAll('.filter-stop:checked')).map(el => parseInt(el.value));
+            
+            // Checked airlines
+            const checkedAirlines = Array.from(document.querySelectorAll('.filter-airline:checked')).map(el => el.value);
+
+            currentFilteredFlights = sampleFlights.filter(flight => {
+                const matchesPrice = flight.price <= maxPrice;
+                const matchesStops = checkedStops.includes(flight.stops) || (flight.stops >= 2 && checkedStops.includes(2));
+                const matchesAirline = checkedAirlines.includes(flight.airline);
+                return matchesPrice && matchesStops && matchesAirline;
+            });
+
+            // Sorting
+            const sortMode = document.getElementById('sortSelect').value;
+            if (sortMode === 'price-asc') {
+                currentFilteredFlights.sort((a, b) => a.price - b.price);
+            } else if (sortMode === 'price-desc') {
+                currentFilteredFlights.sort((a, b) => b.price - a.price);
+            } else if (sortMode === 'duration-asc') {
+                currentFilteredFlights.sort((a, b) => parseInt(a.duration) - parseInt(b.duration));
+            }
+
+            renderFlightResults(currentFilteredFlights);
+        }
+
+        function resetFilters() {
+            document.getElementById('priceRange').value = 1200;
+            updatePriceDisplay(1200);
+            document.querySelectorAll('.filter-stop, .filter-airline').forEach(cb => cb.checked = true);
+            applyFiltersAndSort();
+        }
+
+        // Search Form Submission Handler
+        function handleSearch(e) {
+            e.preventDefault();
+            const origin = document.getElementById('originSelect').value;
+            const destination = document.getElementById('destinationSelect').value;
+
+            // Filter sample flights based on query origin/destination
+            currentFilteredFlights = sampleFlights.filter(f => f.origin === origin && f.destination === destination);
+            
+            // Fallback: If no match found, show all to keep UI populated
+            if (currentFilteredFlights.length === 0) {
+                currentFilteredFlights = [...sampleFlights];
+                document.getElementById('resultsSubtitle').innerText = `No exact route match for ${origin} → ${destination}. Showing all available flights.`;
+            } else {
+                document.getElementById('resultsSubtitle').innerText = `Showing results for ${origin} to ${destination}`;
+            }
+
+            renderFlightResults(currentFilteredFlights);
+        }
+
+        // Render Cards dynamically
+        function renderFlightResults(flights) {
+            const container = document.getElementById('flightResultsList');
+            if (flights.length === 0) {
+                container.innerHTML = `
+                    <div class="card border-0 shadow-sm p-5 text-center">
+                        <i class="fa-solid fa-plane-slash display-4 text-muted mb-3"></i>
+                        <h5>No flights match your filter criteria</h5>
+                        <p class="text-muted small">Try adjusting your budget or stop preferences.</p>
+                        <div><button class="btn btn-outline-primary btn-sm rounded-pill" onclick="resetFilters()">Reset Filters</button></div>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = flights.map(f => `
+                <div class="card flight-card border-0 shadow-sm rounded-4 p-3 p-md-4">
+                    <div class="row align-items-center g-3">
+                        <!-- Airline Logo & Name -->
+                        <div class="col-md-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="fs-2"><i class="${f.logo}"></i></div>
+                                <div>
+                                    <h6 class="fw-bold mb-0">${f.airline}</h6>
+                                    <span class="badge bg-light text-secondary border small">${f.id}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Flight Duration Timeline -->
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between align-items-center text-center">
+                                <div>
+                                    <span class="fs-5 fw-bold d-block">${f.departTime}</span>
+                                    <span class="badge bg-secondary-subtle text-dark">${f.origin}</span>
+                                </div>
+
+                                <div class="flex-grow-1 mx-3 flight-timeline">
+                                    <div class="flight-line"></div>
+                                    <div class="flight-plane-icon mx-auto">
+                                        <i class="fa-solid fa-plane fs-6"></i>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <span class="fs-5 fw-bold d-block">${f.arrivalTime}</span>
+                                    <span class="badge bg-secondary-subtle text-dark">${f.destination}</span>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between text-muted small mt-1">
+                                <span>${f.originCity}</span>
+                                <span>${f.duration} (${f.stops === 0 ? 'Direct' : f.stops + ' Stop'})</span>
+                                <span>${f.destCity}</span>
+                            </div>
+                        </div>
+
+                        <!-- Pricing & Action -->
+                        <div class="col-md-3 text-md-end border-start-md">
+                            <div class="mb-2">
+                                <span class="fs-3 fw-bold text-primary">$${f.price}</span>
+                                <span class="text-muted small d-block">per passenger</span>
+                            </div>
+                            <button class="btn btn-primary rounded-pill w-100 fw-bold" onclick="openBookingModal('${f.id}')">
+                                Select <i class="fa-solid fa-chevron-right ms-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Fast Deal Helper
+        function selectQuickDeal(origin, dest) {
+            document.getElementById('originSelect').value = origin;
+            document.getElementById('destinationSelect').value = dest;
+            document.getElementById('heroSearchForm').dispatchEvent(new Event('submit'));
+            document.getElementById('flights-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Booking Wizard & Modal
+        function openBookingModal(flightId) {
+            selectedFlight = sampleFlights.find(f => f.id === flightId);
+            
+            // Populate Modal Header Summary
+            document.getElementById('modalFlightSummary').innerHTML = `
+                <div>
+                    <h6 class="fw-bold mb-0">${selectedFlight.airline} (${selectedFlight.id})</h6>
+                    <span class="small text-muted">${selectedFlight.originCity} (${selectedFlight.origin}) → ${selectedFlight.destCity} (${selectedFlight.destination})</span>
+                </div>
+                <div class="text-end">
+                    <span class="fw-bold text-primary fs-5">$${selectedFlight.price}</span>
+                    <span class="d-block small text-muted">${currentCabinClass}</span>
+                </div>
+            `;
+
+            // Reset modal steps
+            goToTab('pills-passenger-tab');
+            document.getElementById('bookingTabsContent').classList.remove('d-none');
+            document.getElementById('bookingTabs').classList.remove('d-none');
+            document.getElementById('bookingSuccessMessage').classList.add('d-none');
+
+            // Calculate initial summary
+            updatePriceSummary();
+
+            const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
+            modal.show();
+        }
+
+        function goToTab(tabId) {
+            const tabButton = document.getElementById(tabId);
+            const triggerEl = new bootstrap.Tab(tabButton);
+            triggerEl.show();
+        }
+
+        // Generate Interactive Seat Grid
+        function generateSeatMap() {
+            const container = document.getElementById('seatMapGrid');
+            const rows = 5;
+            const cols = ['A', 'B', 'C', 'D', 'E', 'F'];
+            let html = '';
+
+            for (let r = 1; r <= rows; r++) {
+                cols.forEach((c, idx) => {
+                    const seatId = `${r}${c}`;
+                    const isOccupied = (r === 2 && c === 'B') || (r === 4 && c === 'E');
+                    const aisleClass = idx === 2 ? 'seat-aisle' : '';
+
+                    html += `
+                        <div class="seat ${isOccupied ? 'occupied' : ''} ${aisleClass}" 
+                             onclick="selectSeat(this, '${seatId}')" id="seat-${seatId}">
+                            ${seatId}
+                        </div>
+                    `;
+                });
+            }
+            container.innerHTML = html;
+        }
+
+        function selectSeat(el, seatId) {
+            if (el.classList.contains('occupied')) return;
+
+            document.querySelectorAll('.seat.selected').forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedSeat = seatId;
+        }
+
+        function updatePriceSummary() {
+            if (!selectedFlight) return;
+            const baseTotal = selectedFlight.price * passengerCount;
+            const seatFee = selectedSeat ? 20 : 15;
+            const taxes = Math.round(baseTotal * 0.1);
+            const total = baseTotal + seatFee + taxes;
+
+            document.getElementById('summaryBasePrice').innerText = `$${baseTotal}`;
+            document.getElementById('summarySeatPrice').innerText = `$${seatFee}`;
+            document.getElementById('summaryTaxPrice').innerText = `$${taxes}`;
+            document.getElementById('summaryTotalPrice').innerText = `$${total}`;
+        }
+
+        function completeBooking() {
+            // Hide wizard & header controls
+            document.getElementById('bookingTabsContent').classList.add('d-none');
+            document.getElementById('bookingTabs').classList.add('d-none');
+
+            // Generate Random Booking Ref
+            const ref = '#' + Math.random().toString(36).substring(2, 8).toUpperCase();
+            document.getElementById('bookingRef').innerText = ref;
+
+            // Show Success Message
+            document.getElementById('bookingSuccessMessage').classList.remove('d-none');
+        }
+    </script>
+</body>
+</html>
